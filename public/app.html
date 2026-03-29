@@ -1,225 +1,456 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>ShieldHer — Professional Safety AI</title>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Smart Safety Network | SREC Edition</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
-    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;700&display=swap"
+        rel="stylesheet">
     <style>
         :root {
-            --bg: #03030c; --surface: #0c0c1a; --surface2: #14142b;
-            --accent: #ff2a5c; --safe: #0affb3; --danger: #ff1e4f;
-            --text: #ffffff; --muted: #7f7fb0; --border: rgba(255, 255, 255, 0.1);
-            --radius-lg: 32px; --font-head: 'Syne', sans-serif;
+            --bg: #03030c;
+            --surface: #0c0c1a;
+            --accent: #ff2a5c;
+            --safe: #0affb3;
+            --warning: #ffcc00;
+            --text: #fff;
+            --muted: #7f7fb0;
+            --border: rgba(255, 255, 255, 0.1);
         }
 
-        body.night-protocol { --bg: #0d0004; --surface: #1a0208; --accent: #ff0040; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { background: #000; color: var(--text); font-family: 'DM Sans', sans-serif; height: 100vh; width: 100vw; overflow: hidden; display: flex; justify-content: center; align-items: center; }
+        body {
+            background: #000;
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+        }
 
-        .phone { width: 100%; max-width: 430px; height: 100vh; background: var(--bg); position: relative; overflow: hidden; display: flex; flex-direction: column; border: 1px solid var(--border); }
+        .phone {
+            width: 100%;
+            max-width: 430px;
+            height: 100vh;
+            background: var(--bg);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--border);
+        }
 
-        #backendHUD { position: absolute; top: 55px; left: 50%; transform: translateX(-50%); background: rgba(0, 0, 0, 0.9); border: 1px solid var(--safe); color: var(--safe); padding: 8px 24px; border-radius: 50px; font-family: monospace; font-size: 11px; z-index: 10000; display: none; font-weight: 700; }
+        .screen {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+            padding-bottom: 100px;
+            overflow-y: auto;
+        }
 
-        .screen { display: none; flex-direction: column; height: 100%; width: 100%; overflow-y: auto; padding-bottom: 110px; animation: slideUp 0.6s cubic-bezier(0.19, 1, 0.22, 1); }
-        .screen.active { display: flex; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        .screen.active {
+            display: flex;
+        }
 
-        .header { padding: 70px 24px 20px; display: flex; align-items: center; justify-content: space-between; }
-        .logo { font-family: var(--font-head); font-size: 30px; font-weight: 800; letter-spacing: -1px; }
-        .logo span { color: var(--accent); }
-        .icon-btn { width: 50px; height: 50px; background: var(--surface); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); cursor: pointer; }
+        .header {
+            padding: 60px 24px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-        .sos-area { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
-        .sos-ring { position: absolute; width: 320px; height: 320px; transform: rotate(-90deg); }
-        .sos-ring circle { fill: none; stroke-width: 8; stroke-linecap: round; }
-        .ring-fill { stroke: var(--accent); stroke-dasharray: 880; stroke-dashoffset: 880; transition: stroke-dashoffset 0.1s linear; }
-        .sos-button { width: 220px; height: 220px; background: linear-gradient(145deg, #ff2a5c, #9c0029); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 0 80px rgba(255, 42, 92, 0.5); cursor: pointer; z-index: 10; }
-        .sos-label { font-family: var(--font-head); font-size: 58px; font-weight: 800; color: white; letter-spacing: 5px; }
+        .logo {
+            font-family: 'Syne';
+            font-size: 24px;
+            font-weight: 800;
+        }
 
-        #realMap { height: 500px; width: calc(100% - 48px); margin: 0 24px; border-radius: var(--radius-lg); border: 2px solid var(--border); z-index: 1; }
-        .leaflet-routing-container { display: none !important; } 
-        
-        .leaflet-popup-content-wrapper { background: var(--surface) !important; color: white !important; border-radius: 16px; border: 1px solid var(--accent); }
-        .nav-link-btn { background: var(--accent); color: white; padding: 10px; border-radius: 12px; border: none; font-weight: 800; margin-top: 10px; cursor: pointer; width: 100%; font-size: 10px; }
-        .safe-btn { background: var(--safe) !important; color: black !important; }
+        .logo span {
+            color: var(--accent);
+        }
 
-        .risk-dashboard { margin: 0 24px 20px; background: var(--surface); padding: 30px; border-radius: var(--radius-lg); border: 1px solid var(--border); }
-        .risk-bar-outer { height: 14px; background: #1e1e32; border-radius: 20px; overflow: hidden; margin-top: 15px; }
-        .risk-bar-inner { height: 100%; width: 8%; background: var(--safe); transition: 1.5s ease; }
+        .form-card {
+            margin: 15px;
+            background: var(--surface);
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+        }
 
-        .bottom-nav { position: absolute; bottom: 0; width: 100%; background: rgba(3, 3, 12, 0.98); backdrop-filter: blur(25px); display: grid; grid-template-columns: repeat(4, 1fr); padding: 18px 0 35px; border-top: 1px solid var(--border); z-index: 1000; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 8px; color: var(--muted); cursor: pointer; }
-        .nav-item.active { color: var(--accent); }
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            background: #14142b;
+            border: 1px solid var(--border);
+            color: #fff;
+            border-radius: 10px;
+            outline: none;
+            font-size: 14px;
+        }
 
-        #sosOverlay { display: none; position: fixed; inset: 0; background: var(--danger); z-index: 99999; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
-        #sosOverlay.active { display: flex; animation: flash 0.4s infinite alternate; }
-        @keyframes flash { from { background: #ff2a5c; } to { background: #7a001d; } }
+        button {
+            width: 100%;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 800;
+            cursor: pointer;
+            background: var(--accent);
+            color: white;
+            transition: 0.3s;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        #realMap {
+            height: 350px;
+            margin: 15px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .sos-btn {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--accent), #900);
+            margin: 30px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 900;
+            box-shadow: 0 0 30px rgba(255, 42, 92, 0.4);
+        }
+
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 85px;
+            background: rgba(12, 12, 26, 0.98);
+            display: none;
+            grid-template-columns: repeat(5, 1fr);
+            align-items: center;
+            border-top: 1px solid var(--border);
+            z-index: 1000;
+        }
+
+        .nav-item {
+            text-align: center;
+            color: var(--muted);
+            font-size: 9px;
+            cursor: pointer;
+        }
+
+        .nav-item.active {
+            color: var(--safe);
+        }
+
+        #sosOverlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: var(--accent);
+            z-index: 9999;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .toggle-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .score-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .history-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 5px;
+            font-size: 12px;
+        }
     </style>
 </head>
+
 <body>
-
-    <div id="backendHUD">AI CORE: STANDBY</div>
-
     <div class="phone">
         <div id="sosOverlay">
-            <h1 style="font-family: var(--font-head); font-size: 50px; font-weight: 900; color: white;">SIGNAL SENT</h1>
-            <div id="sosTimer" style="font-size: 180px; font-weight: 900; color: white;">5</div>
-            <button onclick="cancelSOS()" style="margin-top: 40px; padding: 20px 60px; border-radius: 50px; border: none; font-weight: 900; cursor: pointer; background: white; color: red;">ABORT</button>
+            <h1 style="font-size: 40px;">🚨 EMERGENCY 🚨</h1>
+            <p>Alerting Guardians & Police in...</p>
+            <h1 id="timer" style="font-size: 80px; margin: 20px 0;">5</h1>
+            <button onclick="stopSOS()" style="background:#fff; color:#000; width:auto; padding:15px 50px;">CANCEL
+                SOS</button>
         </div>
 
         <div class="screen active" id="splash">
-            <div style="font-size: 130px;">🛡️</div>
-            <h1 class="logo" style="font-size: 60px; margin-top: 20px;">Shield<span>Her</span></h1>
-            <p id="userStatus" style="color: var(--muted); font-size: 14px; margin-bottom: 30px;">Awaiting IT Authentication...</p>
-            <button onclick="handleUserLogin()" style="background: var(--accent); color: white; border: none; padding: 25px 80px; border-radius: 60px; font-size: 20px; font-weight: 800;">SECURE BOOT</button>
+            <div style="text-align:center; margin-top:80px; font-size:60px;">🛡️</div>
+            <h1 class="logo" style="text-align:center;">Safety<span>Net</span></h1>
+            <div class="form-card">
+                <input type="text" id="uName" placeholder="Full Name">
+                <input type="tel" id="uPhone" placeholder="Mobile Number">
+                <button onclick="login()">SECURE INITIALIZE</button>
+            </div>
         </div>
 
         <div class="screen" id="home">
             <div class="header">
-                <div class="logo">Shield<span>Her</span></div>
-                <div class="icon-btn" onclick="goTo('settings')">⚙️</div>
+                <div class="logo">Safety<span>Net</span></div>
+                <div id="clock" style="font-weight:bold; color:var(--safe)">00:00</div>
             </div>
-            <div class="sos-area">
-                <svg class="sos-ring" viewBox="0 0 300 300"><circle cx="150" cy="150" r="140" stroke="#14142b" stroke-width="8" fill="none"></circle><circle class="ring-fill" id="holdCircle" cx="150" cy="150" r="140" fill="none"></circle></svg>
-                <div class="sos-button" onmousedown="startHold()" onmouseup="endHold()" ontouchstart="startHold()" ontouchend="endHold()">
-                    <div class="sos-label">SOS</div>
-                    <div style="font-size: 9px; font-weight: 900; color: rgba(255,255,255,0.8); margin-top: 5px;">HOLD 3S</div>
-                </div>
-            </div>
-            <div class="risk-dashboard">
-                <div style="display:flex; justify-content: space-between; align-items: baseline;">
-                    <div><span style="font-size: 11px; font-weight: 800; color: var(--muted); display: block;">SPATIAL RISK</span><span id="riskPct" style="font-family: var(--font-head); font-size: 40px; font-weight: 800; color: var(--safe);">08%</span></div>
-                    <span id="riskTag" style="color: var(--safe); font-weight: 900; font-size: 13px;">OPTIMAL</span>
-                </div>
-                <div class="risk-bar-outer"><div class="risk-bar-inner" id="riskBar"></div></div>
+            <div class="sos-btn" onclick="triggerSOS()">SOS</div>
+            <div class="form-card">
+                <h4 style="color:var(--safe)">LIVE SENSOR HUD</h4>
+                <p id="sensorStatus" style="font-size:12px; margin-top:10px; color:var(--muted)">Sensors Standby...</p>
+                <p id="heartDisplay" style="margin-top:5px; font-weight:bold;">💓 BPM: --</p>
             </div>
         </div>
 
         <div class="screen" id="map">
             <div class="header">
-                <div class="icon-btn" onclick="goTo('home')">←</div>
-                <div class="logo">Safety<span>Grid</span></div>
-                <div class="icon-btn" onclick="forceNightMode()">🌙</div>
+                <div class="logo">Safety<span>Grid</span></div><button onclick="syncGPS()"
+                    style="width:auto; padding:5px 15px;">📍</button>
             </div>
             <div id="realMap"></div>
-            <div style="padding: 24px;">
-                <h4 style="font-family: var(--font-head); margin-bottom: 5px; color: var(--accent);">COIMBATORE LIVE DATA</h4>
-                <p id="mapStatus" style="font-size: 12px; color: var(--muted); line-height: 1.5;">Linking with Node.js backend...</p>
+            <div class="form-card" id="routeInfo" style="display:none;">
+                <h4 id="roadName">Select a Route</h4>
+                <div id="scoreDisplay" class="score-badge">Score: --</div>
+                <p id="riskAnalysis" style="font-size:12px; margin-top:8px;"></p>
+                <div id="roadHistory" style="margin-top:10px;"></div>
             </div>
         </div>
 
-        <div class="screen" id="circle"><div class="header"><div class="logo">My<span>Circle</span></div></div></div>
-        <div class="screen" id="settings"><div class="header"><div class="logo">AI<span>Set</span></div></div></div>
+        <div class="screen" id="report">
+            <div class="header">
+                <div class="logo">Report<span>Log</span></div>
+            </div>
+            <div class="form-card">
+                <h4>Upload Route History</h4>
+                <p style="font-size: 11px; color: var(--muted); margin-bottom: 10px;">Help the community by reporting
+                    incidents.</p>
+                <input type="text" id="crimeArea" placeholder="Area Name">
+                <textarea id="crimeDesc" placeholder="Describe the incident..."></textarea>
+                <label style="font-size:12px; display:block; margin-top:10px;">Evidence Proof (Doc/Image):</label>
+                <input type="file" id="crimeProof" accept=".pdf,.jpg,.png">
+                <button onclick="submitReport()" style="background:var(--safe); color:#000;">SUBMIT EVIDENCE</button>
+            </div>
+        </div>
 
-        <div class="bottom-nav" id="appNav" style="display: none;">
-            <div class="nav-item active" id="nav-home" onclick="goTo('home')">🏠<span style="font-size:9px;">HOME</span></div>
-            <div class="nav-item" id="nav-map" onclick="goTo('map')">🗺️<span style="font-size:9px;">MAP</span></div>
-            <div class="nav-item" id="nav-circle" onclick="goTo('circle')">👥<span style="font-size:9px;">CIRCLE</span></div>
-            <div class="nav-item" id="nav-settings" onclick="goTo('settings')">⚙️<span style="font-size:9px;">SET</span></div>
+        <div class="screen" id="circle">
+            <div class="header">
+                <div class="logo">Safety<span>Circle</span></div>
+            </div>
+            <div class="form-card">
+                <input type="text" id="gName" placeholder="Guardian Name">
+                <input type="tel" id="gPhone" placeholder="Guardian Phone">
+                <button onclick="addGuardian()">ADD TO CIRCLE</button>
+            </div>
+            <div id="gList" style="padding:0 20px;"></div>
+        </div>
+
+        <div class="screen" id="settings">
+            <div class="header">
+                <div class="logo">AI<span>Sensors</span></div>
+            </div>
+            <div class="form-card">
+                <div class="toggle-row"><span>Fall Detection</span><input type="checkbox" id="fallSens"></div>
+                <div class="toggle-row"><span>Heartrate Sync</span><input type="checkbox" id="heartSens"
+                        onchange="toggleHeart()"></div>
+                <div class="toggle-row"><span>Scream Trigger</span><input type="checkbox" id="screamSens"></div>
+                <button onclick="localStorage.clear(); location.reload();"
+                    style="background:#14142b; color:var(--accent);">FORCE LOGOUT</button>
+            </div>
+        </div>
+
+        <div class="bottom-nav" id="nav">
+            <div class="nav-item active" onclick="nav('home')">🏠<br>HOME</div>
+            <div class="nav-item" onclick="nav('map')">🗺️<br>GRID</div>
+            <div class="nav-item" onclick="nav('report')">📝<br>REPORT</div>
+            <div class="nav-item" onclick="nav('circle')">👥<br>CIRCLE</div>
+            <div class="nav-item" onclick="nav('settings')">⚙️<br>SET</div>
         </div>
     </div>
 
     <script>
-        let map, routingControl;
-        let holdValue = 0, holdInt;
-        let userPos = [11.0168, 76.9558]; 
+        let map, userMarker, userPos = [11.0168, 76.9558];
+        let heartbeatInterval;
 
-        // 1. AUTH LOGIC
-        async function handleUserLogin() {
-            const userData = {
-                name: "Suthamathi U",
-                college: "Sri Ramakrishna Engineering College",
-                phone: "9876543210" 
-            };
-            try {
-                const res = await fetch('http://localhost:5000/api/v1/auth/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(userData)
-                });
-                const data = await res.json();
-                localStorage.setItem('shieldHer_User', JSON.stringify(data.user));
-                logBackend("AUTH SUCCESS: " + data.user.name.toUpperCase());
-                goTo('home');
-            } catch (err) {
-                logBackend("OFFLINE MODE ACTIVATED");
-                goTo('home');
-            }
+        // --- AUTH & NAV ---
+        function login() {
+            const name = document.getElementById('uName').value;
+            const phone = document.getElementById('uPhone').value;
+            if (!name || !phone) return alert("Please enter credentials");
+            localStorage.setItem('userPhone', phone);
+            localStorage.setItem('userName', name);
+            nav('home');
+            document.getElementById('nav').style.display = 'grid';
+            startClock();
         }
 
-        // 2. NAVIGATION SYSTEM
-        function goTo(id) {
+        function nav(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            if(id !== 'splash') {
-                document.getElementById('appNav').style.display = 'grid';
-                const currentNav = document.getElementById('nav-' + id);
-                if(currentNav) currentNav.classList.add('active');
-            }
-            if(id === 'map') setTimeout(initMap, 450);
+            if (id === 'map') setTimeout(initMap, 100);
         }
 
-        // 3. MAP & BACKEND SYNC
-        async function initMap() {
+        // --- CLOCK & AUTOMATIC TIME LOGIC ---
+        function startClock() {
+            setInterval(() => {
+                const now = new Date();
+                document.getElementById('clock').innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            }, 1000);
+        }
+
+        // --- MAP & SAFETY SCORING ENGINE ---
+        function initMap() {
             if (map) return;
-            map = L.map('realMap', { zoomControl: false }).setView(userPos, 13);
+            map = L.map('realMap').setView(userPos, 14);
             L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
-            L.circleMarker(userPos, { radius: 10, color: '#0affb3', fillOpacity: 1 }).addTo(map).bindPopup("<b>Your Location</b>");
 
-            try {
-                const response = await fetch('http://localhost:5000/api/v1/map-nodes');
-                const result = await response.json();
-                
-                document.getElementById('mapStatus').innerText = `Sync: ${result.danger_nodes.length} Danger / ${result.safe_nodes.length} Safe Nodes.`;
+            // Sample Coimbatore Road Data with Risk Logic
+            const roads = [
+                { name: "Sathy Road (Near SREC)", coords: [[11.08, 76.99], [11.10, 77.01]], baseRisk: 10, crimeHistory: ["Theft reported 2025"] },
+                { name: "Gandhipuram Flyover Zone", coords: [[11.01, 76.96], [11.02, 76.97]], baseRisk: 50, crimeHistory: ["High Traffic", "Chain Snatching (Night)"] }
+            ];
 
-                // Render Danger (Red)
-                result.danger_nodes.forEach(p => {
-                    L.circle([p.location.lat, p.location.lng], { color: '#ff2a5c', fillOpacity: 0.35, radius: 450 }).addTo(map)
-                    .bindPopup(`<b>DANGER: ${p.type}</b><br>${p.history}<button class="nav-link-btn" onclick="startNav(${p.location.lat}, ${p.location.lng}, 'danger')">AUDIT ROUTE</button>`);
-                });
+            roads.forEach(road => {
+                let score = calculateSafetyScore(road);
+                let color = score > 60 ? 'var(--safe)' : (score > 30 ? 'var(--warning)' : 'var(--accent)');
 
-                // Render Safe (Green)
-                result.safe_nodes.forEach(p => {
-                    L.circleMarker([p.location.lat, p.location.lng], { radius: 12, color: '#0affb3', fillColor: '#0affb3', fillOpacity: 0.8 }).addTo(map)
-                    .bindPopup(`<b>SAFE: ${p.name}</b><br>${p.description}<button class="nav-link-btn safe-btn" onclick="startNav(${p.location.lat}, ${p.location.lng}, 'safe')">ROUTE VIA MAIN ROAD</button>`);
-                });
-            } catch (err) {
-                logBackend("MAP ERROR: Using Static Backup");
+                let line = L.polyline(road.coords, { color: color, weight: 8 }).addTo(map);
+                line.on('click', () => showRoadDetails(road, score));
+            });
+            syncGPS();
+        }
+
+        function calculateSafetyScore(road) {
+            let score = 100;
+            const hour = new Date().getHours();
+
+            // 1. Reduce for Crime History (40%)
+            if (road.crimeHistory.length > 0) score -= 40;
+
+            // 2. Night Time Logic (80% reduction if after 10 PM)
+            if (hour >= 22 || hour <= 4) {
+                score -= 80;
+            }
+
+            return Math.max(score, 5); // Minimum score is 5
+        }
+
+        function showRoadDetails(road, score) {
+            const info = document.getElementById('routeInfo');
+            info.style.display = 'block';
+            document.getElementById('roadName').innerText = road.name;
+
+            const badge = document.getElementById('scoreDisplay');
+            badge.innerText = `Safety Score: ${score}%`;
+            badge.style.background = score > 50 ? 'green' : 'red';
+
+            document.getElementById('riskAnalysis').innerText = score < 30 ? "⚠️ HIGH RISK: Avoid this route at this hour." : "✅ Clear path according to data.";
+
+            document.getElementById('roadHistory').innerHTML = road.crimeHistory.map(h => `<div class="history-item">🕒 ${h}</div>`).join('');
+        }
+
+        // --- CRIME REPORTING ---
+        function submitReport() {
+            const area = document.getElementById('crimeArea').value;
+            if (!area) return alert("Enter area name");
+
+            // Simulate Upload
+            setTimeout(() => {
+                alert(`SUCCESS: Your information for ${area} is recorded. Thank you for contributing to the Safety Network! Your evidence has been sent successfully.`);
+                document.getElementById('crimeArea').value = "";
+                document.getElementById('crimeDesc').value = "";
+                nav('map');
+            }, 1500);
+        }
+
+        // --- SENSORS & ACCELEROMETER ---
+        function toggleHeart() {
+            if (document.getElementById('heartSens').checked) {
+                heartbeatInterval = setInterval(() => {
+                    let bpm = Math.floor(Math.random() * (110 - 60) + 60);
+                    document.getElementById('heartDisplay').innerText = `💓 BPM: ${bpm}`;
+                    if (bpm > 105) triggerSOS();
+                }, 3000);
+            } else {
+                clearInterval(heartbeatInterval);
+                document.getElementById('heartDisplay').innerText = `💓 BPM: --`;
             }
         }
 
-        function startNav(lat, lng, mode) {
-            if (routingControl) map.removeControl(routingControl);
-            const color = (mode === 'safe') ? '#0affb3' : '#ff2a5c';
-            routingControl = L.Routing.control({
-                waypoints: [L.latLng(userPos[0], userPos[1]), L.latLng(lat, lng)],
-                createMarker: () => null,
-                lineOptions: { styles: [{ color: color, opacity: 0.8, weight: 8 }] }
-            }).addTo(map);
-            map.closePopup();
-            logBackend(`NAV: ${mode.toUpperCase()} PROTOCOL`);
+        window.addEventListener('devicemotion', (e) => {
+            if (document.getElementById('fallSens').checked) {
+                let acc = e.accelerationIncludingGravity;
+                let total = Math.sqrt(acc.x ** 2 + acc.y ** 2 + acc.z ** 2);
+                if (total > 35) triggerSOS(); // Sudden impact
+            }
+        });
+
+        // --- SOS & CIRCLE ---
+        function triggerSOS() {
+            document.getElementById('sosOverlay').style.display = 'flex';
+            let c = 5;
+            window.itv = setInterval(() => {
+                c--;
+                document.getElementById('timer').innerText = c;
+                if (c <= 0) {
+                    clearInterval(window.itv);
+                    alert("🚨 EMERGENCY BROADCAST SENT TO ALL GUARDIANS");
+                }
+            }, 1000);
         }
 
-        // 4. SOS LOGIC
-        function startHold() { holdValue = 0; holdInt = setInterval(() => { holdValue += 2; document.getElementById('holdCircle').style.strokeDashoffset = 880 - (holdValue/100)*880; if(holdValue>=100){ clearInterval(holdInt); triggerEmergency(); } }, 30); }
-        function endHold() { clearInterval(holdInt); holdValue = 0; document.getElementById('holdCircle').style.strokeDashoffset = 880; }
-        function triggerEmergency() { document.getElementById('sosOverlay').classList.add('active'); let c = 5; window.sosT = setInterval(() => { c--; document.getElementById('sosTimer').innerText = c; if(c<=0){ clearInterval(window.sosT); logBackend("EMERGENCY SIGNAL SENT"); } }, 1000); }
-        function cancelSOS() { clearInterval(window.sosT); document.getElementById('sosOverlay').classList.remove('active'); document.getElementById('sosTimer').innerText = "5"; }
+        function stopSOS() {
+            clearInterval(window.itv);
+            document.getElementById('sosOverlay').style.display = 'none';
+        }
 
-        function forceNightMode() { document.body.classList.toggle('night-protocol'); }
-        function logBackend(m) { const h = document.getElementById('backendHUD'); h.innerText = "SIGNAL: " + m; h.style.display = 'block'; setTimeout(() => h.style.display = 'none', 3000); }
-        window.onload = () => logBackend("SHIELDHER CORE ONLINE");
+        function addGuardian() {
+            const name = document.getElementById('gName').value;
+            const phone = document.getElementById('gPhone').value;
+            document.getElementById('gList').innerHTML += `<div class="form-card">✅ ${name} (${phone})</div>`;
+            alert("Added to Guardian Circle");
+        }
+
+        function syncGPS() {
+            navigator.geolocation.getCurrentPosition(p => {
+                userPos = [p.coords.latitude, p.coords.longitude];
+                if (map) {
+                    map.setView(userPos, 15);
+                    if (userMarker) map.removeLayer(userMarker);
+                    userMarker = L.circleMarker(userPos, { color: 'var(--safe)', radius: 10, fillOpacity: 1 }).addTo(map);
+                }
+            });
+        }
     </script>
 </body>
+
 </html>
