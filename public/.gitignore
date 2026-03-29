@@ -1,0 +1,18 @@
+# Dependency folders (very large, recreated with npm install)
+node_modules/
+
+# Environment variables (contains your database passwords/secrets)
+.env
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build folders (if you use them later)
+dist/
+build/

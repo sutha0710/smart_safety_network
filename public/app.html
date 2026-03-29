@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>ShieldHer — Professional Safety AI</title>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg: #03030c; --surface: #0c0c1a; --surface2: #14142b;
+            --accent: #ff2a5c; --safe: #0affb3; --danger: #ff1e4f;
+            --text: #ffffff; --muted: #7f7fb0; --border: rgba(255, 255, 255, 0.1);
+            --radius-lg: 32px; --font-head: 'Syne', sans-serif;
+        }
+
+        body.night-protocol { --bg: #0d0004; --surface: #1a0208; --accent: #ff0040; }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { background: #000; color: var(--text); font-family: 'DM Sans', sans-serif; height: 100vh; width: 100vw; overflow: hidden; display: flex; justify-content: center; align-items: center; }
+
+        .phone { width: 100%; max-width: 430px; height: 100vh; background: var(--bg); position: relative; overflow: hidden; display: flex; flex-direction: column; border: 1px solid var(--border); }
+
+        #backendHUD { position: absolute; top: 55px; left: 50%; transform: translateX(-50%); background: rgba(0, 0, 0, 0.9); border: 1px solid var(--safe); color: var(--safe); padding: 8px 24px; border-radius: 50px; font-family: monospace; font-size: 11px; z-index: 10000; display: none; font-weight: 700; }
+
+        .screen { display: none; flex-direction: column; height: 100%; width: 100%; overflow-y: auto; padding-bottom: 110px; animation: slideUp 0.6s cubic-bezier(0.19, 1, 0.22, 1); }
+        .screen.active { display: flex; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+
+        .header { padding: 70px 24px 20px; display: flex; align-items: center; justify-content: space-between; }
+        .logo { font-family: var(--font-head); font-size: 30px; font-weight: 800; letter-spacing: -1px; }
+        .logo span { color: var(--accent); }
+        .icon-btn { width: 50px; height: 50px; background: var(--surface); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); cursor: pointer; }
+
+        .sos-area { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+        .sos-ring { position: absolute; width: 320px; height: 320px; transform: rotate(-90deg); }
+        .sos-ring circle { fill: none; stroke-width: 8; stroke-linecap: round; }
+        .ring-fill { stroke: var(--accent); stroke-dasharray: 880; stroke-dashoffset: 880; transition: stroke-dashoffset 0.1s linear; }
+        .sos-button { width: 220px; height: 220px; background: linear-gradient(145deg, #ff2a5c, #9c0029); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 0 80px rgba(255, 42, 92, 0.5); cursor: pointer; z-index: 10; }
+        .sos-label { font-family: var(--font-head); font-size: 58px; font-weight: 800; color: white; letter-spacing: 5px; }
+
+        #realMap { height: 500px; width: calc(100% - 48px); margin: 0 24px; border-radius: var(--radius-lg); border: 2px solid var(--border); z-index: 1; }
+        .leaflet-routing-container { display: none !important; } 
+        
+        .leaflet-popup-content-wrapper { background: var(--surface) !important; color: white !important; border-radius: 16px; border: 1px solid var(--accent); }
+        .nav-link-btn { background: var(--accent); color: white; padding: 10px; border-radius: 12px; border: none; font-weight: 800; margin-top: 10px; cursor: pointer; width: 100%; font-size: 10px; }
+        .safe-btn { background: var(--safe) !important; color: black !important; }
+
+        .risk-dashboard { margin: 0 24px 20px; background: var(--surface); padding: 30px; border-radius: var(--radius-lg); border: 1px solid var(--border); }
+        .risk-bar-outer { height: 14px; background: #1e1e32; border-radius: 20px; overflow: hidden; margin-top: 15px; }
+        .risk-bar-inner { height: 100%; width: 8%; background: var(--safe); transition: 1.5s ease; }
+
+        .bottom-nav { position: absolute; bottom: 0; width: 100%; background: rgba(3, 3, 12, 0.98); backdrop-filter: blur(25px); display: grid; grid-template-columns: repeat(4, 1fr); padding: 18px 0 35px; border-top: 1px solid var(--border); z-index: 1000; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 8px; color: var(--muted); cursor: pointer; }
+        .nav-item.active { color: var(--accent); }
+
+        #sosOverlay { display: none; position: fixed; inset: 0; background: var(--danger); z-index: 99999; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        #sosOverlay.active { display: flex; animation: flash 0.4s infinite alternate; }
+        @keyframes flash { from { background: #ff2a5c; } to { background: #7a001d; } }
+    </style>
+</head>
+<body>
+
+    <div id="backendHUD">AI CORE: STANDBY</div>
+
+    <div class="phone">
+        <div id="sosOverlay">
+            <h1 style="font-family: var(--font-head); font-size: 50px; font-weight: 900; color: white;">SIGNAL SENT</h1>
+            <div id="sosTimer" style="font-size: 180px; font-weight: 900; color: white;">5</div>
+            <button onclick="cancelSOS()" style="margin-top: 40px; padding: 20px 60px; border-radius: 50px; border: none; font-weight: 900; cursor: pointer; background: white; color: red;">ABORT</button>
+        </div>
+
+        <div class="screen active" id="splash">
+            <div style="font-size: 130px;">🛡️</div>
+            <h1 class="logo" style="font-size: 60px; margin-top: 20px;">Shield<span>Her</span></h1>
+            <p id="userStatus" style="color: var(--muted); font-size: 14px; margin-bottom: 30px;">Awaiting IT Authentication...</p>
+            <button onclick="handleUserLogin()" style="background: var(--accent); color: white; border: none; padding: 25px 80px; border-radius: 60px; font-size: 20px; font-weight: 800;">SECURE BOOT</button>
+        </div>
+
+        <div class="screen" id="home">
+            <div class="header">
+                <div class="logo">Shield<span>Her</span></div>
+                <div class="icon-btn" onclick="goTo('settings')">⚙️</div>
+            </div>
+            <div class="sos-area">
+                <svg class="sos-ring" viewBox="0 0 300 300"><circle cx="150" cy="150" r="140" stroke="#14142b" stroke-width="8" fill="none"></circle><circle class="ring-fill" id="holdCircle" cx="150" cy="150" r="140" fill="none"></circle></svg>
+                <div class="sos-button" onmousedown="startHold()" onmouseup="endHold()" ontouchstart="startHold()" ontouchend="endHold()">
+                    <div class="sos-label">SOS</div>
+                    <div style="font-size: 9px; font-weight: 900; color: rgba(255,255,255,0.8); margin-top: 5px;">HOLD 3S</div>
+                </div>
+            </div>
+            <div class="risk-dashboard">
+                <div style="display:flex; justify-content: space-between; align-items: baseline;">
+                    <div><span style="font-size: 11px; font-weight: 800; color: var(--muted); display: block;">SPATIAL RISK</span><span id="riskPct" style="font-family: var(--font-head); font-size: 40px; font-weight: 800; color: var(--safe);">08%</span></div>
+                    <span id="riskTag" style="color: var(--safe); font-weight: 900; font-size: 13px;">OPTIMAL</span>
+                </div>
+                <div class="risk-bar-outer"><div class="risk-bar-inner" id="riskBar"></div></div>
+            </div>
+        </div>
+
+        <div class="screen" id="map">
+            <div class="header">
+                <div class="icon-btn" onclick="goTo('home')">←</div>
+                <div class="logo">Safety<span>Grid</span></div>
+                <div class="icon-btn" onclick="forceNightMode()">🌙</div>
+            </div>
+            <div id="realMap"></div>
+            <div style="padding: 24px;">
+                <h4 style="font-family: var(--font-head); margin-bottom: 5px; color: var(--accent);">COIMBATORE LIVE DATA</h4>
+                <p id="mapStatus" style="font-size: 12px; color: var(--muted); line-height: 1.5;">Linking with Node.js backend...</p>
+            </div>
+        </div>
+
+        <div class="screen" id="circle"><div class="header"><div class="logo">My<span>Circle</span></div></div></div>
+        <div class="screen" id="settings"><div class="header"><div class="logo">AI<span>Set</span></div></div></div>
+
+        <div class="bottom-nav" id="appNav" style="display: none;">
+            <div class="nav-item active" id="nav-home" onclick="goTo('home')">🏠<span style="font-size:9px;">HOME</span></div>
+            <div class="nav-item" id="nav-map" onclick="goTo('map')">🗺️<span style="font-size:9px;">MAP</span></div>
+            <div class="nav-item" id="nav-circle" onclick="goTo('circle')">👥<span style="font-size:9px;">CIRCLE</span></div>
+            <div class="nav-item" id="nav-settings" onclick="goTo('settings')">⚙️<span style="font-size:9px;">SET</span></div>
+        </div>
+    </div>
+
+    <script>
+        let map, routingControl;
+        let holdValue = 0, holdInt;
+        let userPos = [11.0168, 76.9558]; 
+
+        // 1. AUTH LOGIC
+        async function handleUserLogin() {
+            const userData = {
+                name: "Suthamathi U",
+                college: "Sri Ramakrishna Engineering College",
+                phone: "9876543210" 
+            };
+            try {
+                const res = await fetch('http://localhost:5000/api/v1/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(userData)
+                });
+                const data = await res.json();
+                localStorage.setItem('shieldHer_User', JSON.stringify(data.user));
+                logBackend("AUTH SUCCESS: " + data.user.name.toUpperCase());
+                goTo('home');
+            } catch (err) {
+                logBackend("OFFLINE MODE ACTIVATED");
+                goTo('home');
+            }
+        }
+
+        // 2. NAVIGATION SYSTEM
+        function goTo(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            if(id !== 'splash') {
+                document.getElementById('appNav').style.display = 'grid';
+                const currentNav = document.getElementById('nav-' + id);
+                if(currentNav) currentNav.classList.add('active');
+            }
+            if(id === 'map') setTimeout(initMap, 450);
+        }
+
+        // 3. MAP & BACKEND SYNC
+        async function initMap() {
+            if (map) return;
+            map = L.map('realMap', { zoomControl: false }).setView(userPos, 13);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
+            L.circleMarker(userPos, { radius: 10, color: '#0affb3', fillOpacity: 1 }).addTo(map).bindPopup("<b>Your Location</b>");
+
+            try {
+                const response = await fetch('http://localhost:5000/api/v1/map-nodes');
+                const result = await response.json();
+                
+                document.getElementById('mapStatus').innerText = `Sync: ${result.danger_nodes.length} Danger / ${result.safe_nodes.length} Safe Nodes.`;
+
+                // Render Danger (Red)
+                result.danger_nodes.forEach(p => {
+                    L.circle([p.location.lat, p.location.lng], { color: '#ff2a5c', fillOpacity: 0.35, radius: 450 }).addTo(map)
+                    .bindPopup(`<b>DANGER: ${p.type}</b><br>${p.history}<button class="nav-link-btn" onclick="startNav(${p.location.lat}, ${p.location.lng}, 'danger')">AUDIT ROUTE</button>`);
+                });
+
+                // Render Safe (Green)
+                result.safe_nodes.forEach(p => {
+                    L.circleMarker([p.location.lat, p.location.lng], { radius: 12, color: '#0affb3', fillColor: '#0affb3', fillOpacity: 0.8 }).addTo(map)
+                    .bindPopup(`<b>SAFE: ${p.name}</b><br>${p.description}<button class="nav-link-btn safe-btn" onclick="startNav(${p.location.lat}, ${p.location.lng}, 'safe')">ROUTE VIA MAIN ROAD</button>`);
+                });
+            } catch (err) {
+                logBackend("MAP ERROR: Using Static Backup");
+            }
+        }
+
+        function startNav(lat, lng, mode) {
+            if (routingControl) map.removeControl(routingControl);
+            const color = (mode === 'safe') ? '#0affb3' : '#ff2a5c';
+            routingControl = L.Routing.control({
+                waypoints: [L.latLng(userPos[0], userPos[1]), L.latLng(lat, lng)],
+                createMarker: () => null,
+                lineOptions: { styles: [{ color: color, opacity: 0.8, weight: 8 }] }
+            }).addTo(map);
+            map.closePopup();
+            logBackend(`NAV: ${mode.toUpperCase()} PROTOCOL`);
+        }
+
+        // 4. SOS LOGIC
+        function startHold() { holdValue = 0; holdInt = setInterval(() => { holdValue += 2; document.getElementById('holdCircle').style.strokeDashoffset = 880 - (holdValue/100)*880; if(holdValue>=100){ clearInterval(holdInt); triggerEmergency(); } }, 30); }
+        function endHold() { clearInterval(holdInt); holdValue = 0; document.getElementById('holdCircle').style.strokeDashoffset = 880; }
+        function triggerEmergency() { document.getElementById('sosOverlay').classList.add('active'); let c = 5; window.sosT = setInterval(() => { c--; document.getElementById('sosTimer').innerText = c; if(c<=0){ clearInterval(window.sosT); logBackend("EMERGENCY SIGNAL SENT"); } }, 1000); }
+        function cancelSOS() { clearInterval(window.sosT); document.getElementById('sosOverlay').classList.remove('active'); document.getElementById('sosTimer').innerText = "5"; }
+
+        function forceNightMode() { document.body.classList.toggle('night-protocol'); }
+        function logBackend(m) { const h = document.getElementById('backendHUD'); h.innerText = "SIGNAL: " + m; h.style.display = 'block'; setTimeout(() => h.style.display = 'none', 3000); }
+        window.onload = () => logBackend("SHIELDHER CORE ONLINE");
+    </script>
+</body>
+</html>

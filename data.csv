@@ -1,0 +1,501 @@
+Year,City,Area,Police Station,Crime Type,Number of Cases
+2023,Coimbatore,Ukkadam,B1 Bazaar PS,Harassment,25
+2019,Coimbatore,Saibaba Colony,B4 Race Course PS,Domestic Violence,25
+2018,Coimbatore,Peelamedu,B6 Peelamedu PS,Harassment,17
+2019,Coimbatore,Saibaba Colony,B4 Race Course PS,Stalking,12
+2022,Coimbatore,Podanur,Podanur PS,Harassment,2
+2020,Coimbatore,Podanur,Podanur PS,Assault,3
+2021,Coimbatore,Podanur,Podanur PS,Kidnapping,16
+2020,Coimbatore,Peelamedu,B6 Peelamedu PS,Stalking,1
+2022,Coimbatore,Saravanampatti,Saravanampatti PS,Assault,9
+2021,Coimbatore,Gandhipuram,B3 Kattoor PS,Domestic Violence,19
+2022,Coimbatore,Peelamedu,B6 Peelamedu PS,Harassment,1
+2023,Coimbatore,Thudiyalur,Thudiyalur PS,Domestic Violence,3
+2021,Coimbatore,Ukkadam,B1 Bazaar PS,Kidnapping,18
+2022,Coimbatore,Ukkadam,B1 Bazaar PS,Domestic Violence,23
+2023,Coimbatore,Saibaba Colony,B4 Race Course PS,Kidnapping,11
+2018,Coimbatore,Town Hall,B1 Bazaar PS,Stalking,11
+2020,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Rape,18
+2022,Coimbatore,Perur,Perur PS,Stalking,15
+2020,Coimbatore,Peelamedu,B6 Peelamedu PS,Rape,25
+2018,Coimbatore,Saibaba Colony,B4 Race Course PS,Stalking,7
+2018,Coimbatore,Singanallur,B7 Singanallur PS,Stalking,5
+2019,Coimbatore,Thudiyalur,Thudiyalur PS,Rape,2
+2020,Coimbatore,Town Hall,B1 Bazaar PS,Stalking,25
+2019,Coimbatore,Saravanampatti,Saravanampatti PS,Harassment,25
+2019,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Assault,5
+2020,Coimbatore,Gandhipuram,B3 Kattoor PS,Harassment,19
+2022,Coimbatore,Saravanampatti,Saravanampatti PS,Rape,25
+2019,Coimbatore,Saravanampatti,Saravanampatti PS,Domestic Violence,9
+2022,Coimbatore,Ukkadam,B1 Bazaar PS,Rape,8
+2018,Coimbatore,Perur,Perur PS,Rape,6
+2019,Coimbatore,Thudiyalur,Thudiyalur PS,Rape,17
+2023,Coimbatore,Saravanampatti,Saravanampatti PS,Domestic Violence,9
+2023,Coimbatore,Podanur,Podanur PS,Stalking,17
+2023,Coimbatore,Peelamedu,B6 Peelamedu PS,Rape,9
+2020,Coimbatore,Saibaba Colony,B4 Race Course PS,Stalking,21
+2021,Coimbatore,Peelamedu,B6 Peelamedu PS,Stalking,21
+2022,Coimbatore,RS Puram,B2 RS Puram PS,Assault,13
+2018,Coimbatore,Perur,Perur PS,Assault,22
+2023,Coimbatore,Ukkadam,B1 Bazaar PS,Rape,7
+2021,Coimbatore,Thudiyalur,Thudiyalur PS,Stalking,17
+2022,Coimbatore,Podanur,Podanur PS,Harassment,1
+2018,Coimbatore,Singanallur,B7 Singanallur PS,Rape,5
+2018,Coimbatore,Ukkadam,B1 Bazaar PS,Assault,1
+2020,Coimbatore,Podanur,Podanur PS,Stalking,3
+2018,Coimbatore,RS Puram,B2 RS Puram PS,Kidnapping,21
+2023,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Kidnapping,5
+2023,Coimbatore,Gandhipuram,B3 Kattoor PS,Rape,2
+2019,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Harassment,18
+2020,Coimbatore,Thudiyalur,Thudiyalur PS,Stalking,15
+2022,Coimbatore,Ukkadam,B1 Bazaar PS,Domestic Violence,25
+2019,Coimbatore,Ukkadam,B1 Bazaar PS,Kidnapping,19
+2022,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Rape,9
+2019,Coimbatore,Perur,Perur PS,Stalking,18
+2020,Coimbatore,RS Puram,B2 RS Puram PS,Kidnapping,17
+2018,Coimbatore,Saravanampatti,Saravanampatti PS,Rape,22
+2020,Coimbatore,Thudiyalur,Thudiyalur PS,Assault,7
+2020,Coimbatore,Saravanampatti,Saravanampatti PS,Kidnapping,16
+2019,Coimbatore,Gandhipuram,B3 Kattoor PS,Kidnapping,4
+2023,Coimbatore,Saibaba Colony,B4 Race Course PS,Assault,7
+2023,Coimbatore,Thudiyalur,Thudiyalur PS,Stalking,15
+2018,Coimbatore,Perur,Perur PS,Assault,6
+2022,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Rape,4
+2020,Coimbatore,Saibaba Colony,B4 Race Course PS,Kidnapping,21
+2020,Coimbatore,Perur,Perur PS,Domestic Violence,19
+2019,Coimbatore,Saravanampatti,Saravanampatti PS,Rape,6
+2021,Coimbatore,Podanur,Podanur PS,Rape,3
+2021,Coimbatore,RS Puram,B2 RS Puram PS,Kidnapping,23
+2021,Coimbatore,Gandhipuram,B3 Kattoor PS,Assault,23
+2022,Coimbatore,Ukkadam,B1 Bazaar PS,Harassment,17
+2019,Coimbatore,Ukkadam,B1 Bazaar PS,Rape,12
+2021,Coimbatore,Town Hall,B1 Bazaar PS,Domestic Violence,19
+2019,Coimbatore,Gandhipuram,B3 Kattoor PS,Stalking,13
+2021,Coimbatore,Saravanampatti,Saravanampatti PS,Harassment,19
+2022,Coimbatore,RS Puram,B2 RS Puram PS,Kidnapping,18
+2022,Coimbatore,Ukkadam,B1 Bazaar PS,Kidnapping,23
+2023,Coimbatore,RS Puram,B2 RS Puram PS,Kidnapping,10
+2019,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Domestic Violence,3
+2020,Coimbatore,RS Puram,B2 RS Puram PS,Rape,13
+2021,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Kidnapping,19
+2021,Coimbatore,Thudiyalur,Thudiyalur PS,Harassment,22
+2023,Coimbatore,Saravanampatti,Saravanampatti PS,Harassment,15
+2021,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Domestic Violence,6
+2019,Coimbatore,Gandhipuram,B3 Kattoor PS,Rape,14
+2019,Coimbatore,Gandhipuram,B3 Kattoor PS,Stalking,11
+2021,Coimbatore,Ukkadam,B1 Bazaar PS,Assault,10
+2022,Coimbatore,Saravanampatti,Saravanampatti PS,Assault,11
+2018,Coimbatore,RS Puram,B2 RS Puram PS,Harassment,19
+2019,Coimbatore,Peelamedu,B6 Peelamedu PS,Harassment,10
+2023,Coimbatore,Gandhipuram,B3 Kattoor PS,Harassment,13
+2022,Coimbatore,Saibaba Colony,B4 Race Course PS,Domestic Violence,3
+2021,Coimbatore,Peelamedu,B6 Peelamedu PS,Kidnapping,10
+2022,Coimbatore,Podanur,Podanur PS,Domestic Violence,13
+2022,Coimbatore,Town Hall,B1 Bazaar PS,Stalking,3
+2021,Coimbatore,Ukkadam,B1 Bazaar PS,Stalking,14
+2018,Coimbatore,Perur,Perur PS,Kidnapping,2
+2021,Coimbatore,Thudiyalur,Thudiyalur PS,Stalking,12
+2020,Coimbatore,Perur,Perur PS,Kidnapping,18
+2023,Coimbatore,Saravanampatti,Saravanampatti PS,Stalking,23
+2021,Coimbatore,Ukkadam,B1 Bazaar PS,Domestic Violence,14
+2021,Coimbatore,RS Puram,B2 RS Puram PS,Domestic Violence,4
+2018,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Harassment,3
+2022,Coimbatore,Podanur,Podanur PS,Kidnapping,11
+2019,Coimbatore,RS Puram,B2 RS Puram PS,Stalking,7
+2023,Coimbatore,Saravanampatti,Saravanampatti PS,Kidnapping,2
+2021,Coimbatore,Podanur,Podanur PS,Stalking,11
+2018,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Rape,10
+2019,Coimbatore,Saibaba Colony,B4 Race Course PS,Rape,21
+2018,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Stalking,20
+2020,Coimbatore,Gandhipuram,B3 Kattoor PS,Stalking,6
+2019,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Harassment,20
+2018,Coimbatore,Perur,Perur PS,Stalking,18
+2020,Coimbatore,Singanallur,B7 Singanallur PS,Assault,6
+2018,Coimbatore,Singanallur,B7 Singanallur PS,Kidnapping,6
+2019,Coimbatore,Saibaba Colony,B4 Race Course PS,Assault,6
+2023,Coimbatore,Podanur,Podanur PS,Rape,23
+2021,Coimbatore,Saibaba Colony,B4 Race Course PS,Domestic Violence,24
+2023,Coimbatore,RS Puram,B2 RS Puram PS,Kidnapping,10
+2020,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Harassment,19
+2018,Coimbatore,Podanur,Podanur PS,Harassment,23
+2021,Coimbatore,Saibaba Colony,B4 Race Course PS,Rape,11
+2019,Coimbatore,RS Puram,B2 RS Puram PS,Assault,15
+2021,Coimbatore,Podanur,Podanur PS,Rape,15
+2023,Coimbatore,Gandhipuram,B3 Kattoor PS,Rape,4
+2023,Coimbatore,Gandhipuram,B3 Kattoor PS,Harassment,17
+2019,Coimbatore,Perur,Perur PS,Harassment,4
+2020,Coimbatore,Gandhipuram,B3 Kattoor PS,Stalking,4
+2022,Coimbatore,RS Puram,B2 RS Puram PS,Assault,22
+2023,Coimbatore,Thudiyalur,Thudiyalur PS,Assault,19
+2022,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Harassment,24
+2022,Coimbatore,Saibaba Colony,B4 Race Course PS,Harassment,8
+2020,Coimbatore,Saravanampatti,Saravanampatti PS,Harassment,12
+2023,Coimbatore,Singanallur,B7 Singanallur PS,Stalking,6
+2023,Coimbatore,Ukkadam,B1 Bazaar PS,Assault,8
+2023,Coimbatore,Peelamedu,B6 Peelamedu PS,Rape,18
+2021,Coimbatore,Ukkadam,B1 Bazaar PS,Rape,3
+2020,Coimbatore,RS Puram,B2 RS Puram PS,Assault,3
+2019,Coimbatore,Gandhipuram,B3 Kattoor PS,Kidnapping,14
+2023,Coimbatore,Town Hall,B1 Bazaar PS,Stalking,7
+2021,Coimbatore,Peelamedu,B6 Peelamedu PS,Kidnapping,15
+2022,Coimbatore,Singanallur,B7 Singanallur PS,Assault,25
+2019,Coimbatore,Singanallur,B7 Singanallur PS,Domestic Violence,2
+2022,Coimbatore,RS Puram,B2 RS Puram PS,Domestic Violence,7
+2021,Coimbatore,Perur,Perur PS,Rape,22
+2018,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Rape,17
+2023,Coimbatore,Peelamedu,B6 Peelamedu PS,Kidnapping,21
+2019,Coimbatore,Town Hall,B1 Bazaar PS,Domestic Violence,17
+2018,Coimbatore,Saravanampatti,Saravanampatti PS,Domestic Violence,13
+2019,Coimbatore,Saravanampatti,Saravanampatti PS,Stalking,16
+2018,Coimbatore,Singanallur,B7 Singanallur PS,Stalking,23
+2022,Coimbatore,Peelamedu,B6 Peelamedu PS,Rape,13
+2019,Coimbatore,RS Puram,B2 RS Puram PS,Rape,4
+2022,Coimbatore,Thudiyalur,Thudiyalur PS,Stalking,7
+2021,Coimbatore,Gandhipuram,B3 Kattoor PS,Stalking,10
+2022,Coimbatore,Gandhipuram,B3 Kattoor PS,Assault,11
+2020,Coimbatore,Town Hall,B1 Bazaar PS,Harassment,1
+2018,Coimbatore,Peelamedu,B6 Peelamedu PS,Assault,23
+2019,Coimbatore,Ukkadam,B1 Bazaar PS,Rape,16
+2018,Coimbatore,Saibaba Colony,B4 Race Course PS,Rape,22
+2019,Coimbatore,Singanallur,B7 Singanallur PS,Harassment,20
+2023,Coimbatore,RS Puram,B2 RS Puram PS,Domestic Violence,24
+2020,Coimbatore,Saibaba Colony,B4 Race Course PS,Harassment,22
+2019,Coimbatore,Saibaba Colony,B4 Race Course PS,Rape,2
+2020,Coimbatore,Podanur,Podanur PS,Harassment,14
+2019,Coimbatore,Gandhipuram,B3 Kattoor PS,Assault,17
+2021,Coimbatore,Gandhipuram,B3 Kattoor PS,Rape,9
+2022,Coimbatore,Thudiyalur,Thudiyalur PS,Rape,1
+2019,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Domestic Violence,3
+2022,Coimbatore,Perur,Perur PS,Rape,24
+2020,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Assault,21
+2018,Coimbatore,Perur,Perur PS,Assault,3
+2022,Coimbatore,Perur,Perur PS,Stalking,9
+2021,Coimbatore,RS Puram,B2 RS Puram PS,Kidnapping,22
+2022,Coimbatore,Saravanampatti,Saravanampatti PS,Assault,2
+2022,Coimbatore,Perur,Perur PS,Assault,17
+2019,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Kidnapping,5
+2022,Coimbatore,Saravanampatti,Saravanampatti PS,Kidnapping,15
+2022,Coimbatore,Ukkadam,B1 Bazaar PS,Assault,2
+2019,Coimbatore,Thudiyalur,Thudiyalur PS,Harassment,12
+2023,Coimbatore,Ukkadam,B1 Bazaar PS,Domestic Violence,24
+2021,Coimbatore,Perur,Perur PS,Stalking,7
+2019,Coimbatore,Thudiyalur,Thudiyalur PS,Kidnapping,4
+2019,Coimbatore,RS Puram,B2 RS Puram PS,Stalking,14
+2021,Coimbatore,RS Puram,B2 RS Puram PS,Stalking,13
+2020,Coimbatore,Gandhipuram,B3 Kattoor PS,Rape,22
+2023,Coimbatore,Thudiyalur,Thudiyalur PS,Kidnapping,6
+2020,Coimbatore,Ukkadam,B1 Bazaar PS,Kidnapping,14
+2021,Coimbatore,Gandhipuram,B3 Kattoor PS,Domestic Violence,25
+2019,Coimbatore,Gandhipuram,B3 Kattoor PS,Assault,12
+2023,Coimbatore,Saibaba Colony,B4 Race Course PS,Stalking,15
+2020,Coimbatore,Singanallur,B7 Singanallur PS,Domestic Violence,2
+2020,Coimbatore,Singanallur,B7 Singanallur PS,Rape,18
+2022,Coimbatore,Podanur,Podanur PS,Rape,19
+2022,Coimbatore,Peelamedu,B6 Peelamedu PS,Assault,9
+2019,Coimbatore,Gandhipuram,B3 Kattoor PS,Assault,5
+2023,Coimbatore,Singanallur,B7 Singanallur PS,Assault,10
+2021,Coimbatore,Town Hall,B1 Bazaar PS,Rape,25
+2023,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Rape,20
+2018,Coimbatore,Ukkadam,B1 Bazaar PS,Rape,18
+2019,Coimbatore,RS Puram,B2 RS Puram PS,Kidnapping,5
+2023,Coimbatore,Peelamedu,B6 Peelamedu PS,Stalking,14
+2020,Coimbatore,Gandhipuram,B3 Kattoor PS,Domestic Violence,11
+2020,Coimbatore,RS Puram,B2 RS Puram PS,Domestic Violence,8
+2022,Coimbatore,Town Hall,B1 Bazaar PS,Assault,10
+2020,Coimbatore,Town Hall,B1 Bazaar PS,Domestic Violence,8
+2019,Coimbatore,Saibaba Colony,B4 Race Course PS,Kidnapping,1
+2019,Coimbatore,Ukkadam,B1 Bazaar PS,Kidnapping,18
+2021,Coimbatore,Perur,Perur PS,Kidnapping,5
+2023,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Kidnapping,24
+2018,Coimbatore,Saravanampatti,Saravanampatti PS,Assault,13
+2022,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Kidnapping,1
+2021,Coimbatore,Saravanampatti,Saravanampatti PS,Harassment,8
+2019,Coimbatore,Town Hall,B1 Bazaar PS,Kidnapping,24
+2019,Coimbatore,RS Puram,B2 RS Puram PS,Harassment,22
+2019,Coimbatore,Perur,Perur PS,Kidnapping,4
+2018,Coimbatore,Singanallur,B7 Singanallur PS,Stalking,20
+2021,Coimbatore,Singanallur,B7 Singanallur PS,Assault,21
+2023,Coimbatore,Gandhipuram,B3 Kattoor PS,Kidnapping,14
+2019,Coimbatore,Podanur,Podanur PS,Harassment,10
+2021,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Rape,8
+2023,Coimbatore,Saibaba Colony,B4 Race Course PS,Domestic Violence,18
+2021,Coimbatore,Peelamedu,B6 Peelamedu PS,Domestic Violence,1
+2022,Coimbatore,Saravanampatti,Saravanampatti PS,Domestic Violence,11
+2023,Coimbatore,Ukkadam,B1 Bazaar PS,Domestic Violence,21
+2023,Coimbatore,Peelamedu,B6 Peelamedu PS,Harassment,16
+2018,Coimbatore,Peelamedu,B6 Peelamedu PS,Stalking,16
+2020,Coimbatore,Perur,Perur PS,Domestic Violence,5
+2019,Coimbatore,Podanur,Podanur PS,Kidnapping,4
+2023,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Stalking,25
+2020,Coimbatore,Thudiyalur,Thudiyalur PS,Assault,1
+2018,Coimbatore,Saravanampatti,Saravanampatti PS,Domestic Violence,16
+2023,Coimbatore,Podanur,Podanur PS,Harassment,8
+2021,Coimbatore,Ukkadam,B1 Bazaar PS,Rape,5
+2021,Coimbatore,Thudiyalur,Thudiyalur PS,Kidnapping,11
+2018,Coimbatore,Thudiyalur,Thudiyalur PS,Kidnapping,16
+2018,Coimbatore,Podanur,Podanur PS,Kidnapping,17
+2021,Coimbatore,Gandhipuram,B3 Kattoor PS,Rape,3
+2021,Coimbatore,Gandhipuram,B3 Kattoor PS,Domestic Violence,8
+2021,Coimbatore,Singanallur,B7 Singanallur PS,Kidnapping,25
+2020,Coimbatore,Thudiyalur,Thudiyalur PS,Harassment,10
+2018,Coimbatore,Gandhipuram,B3 Kattoor PS,Kidnapping,6
+2021,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Stalking,5
+2019,Coimbatore,Saibaba Colony,B4 Race Course PS,Assault,2
+2020,Coimbatore,Saravanampatti,Saravanampatti PS,Kidnapping,24
+2022,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Kidnapping,19
+2023,Coimbatore,Gandhipuram,B3 Kattoor PS,Stalking,14
+2023,Coimbatore,Ukkadam,B1 Bazaar PS,Stalking,3
+2018,Coimbatore,Gandhipuram,B3 Kattoor PS,Assault,24
+2018,Coimbatore,RS Puram,B2 RS Puram PS,Rape,11
+2021,Coimbatore,RS Puram,B2 RS Puram PS,Harassment,14
+2021,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Assault,13
+2022,Coimbatore,Thudiyalur,Thudiyalur PS,Harassment,17
+2023,Coimbatore,Peelamedu,B6 Peelamedu PS,Assault,1
+2022,Coimbatore,Town Hall,B1 Bazaar PS,Kidnapping,2
+2022,Coimbatore,Town Hall,B1 Bazaar PS,Assault,6
+2022,Coimbatore,Singanallur,B7 Singanallur PS,Assault,1
+2018,Coimbatore,RS Puram,B2 RS Puram PS,Harassment,10
+2022,Coimbatore,Town Hall,B1 Bazaar PS,Domestic Violence,21
+2021,Coimbatore,Singanallur,B7 Singanallur PS,Kidnapping,13
+2023,Coimbatore,RS Puram,B2 RS Puram PS,Assault,8
+2020,Coimbatore,Gandhipuram,B3 Kattoor PS,Stalking,21
+2019,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Harassment,8
+2020,Coimbatore,RS Puram,B2 RS Puram PS,Harassment,21
+2021,Coimbatore,Singanallur,B7 Singanallur PS,Assault,23
+2021,Coimbatore,Thudiyalur,Thudiyalur PS,Kidnapping,16
+2018,Coimbatore,Podanur,Podanur PS,Rape,18
+2023,Coimbatore,Peelamedu,B6 Peelamedu PS,Domestic Violence,9
+2023,Coimbatore,Saravanampatti,Saravanampatti PS,Assault,21
+2020,Coimbatore,Gandhipuram,B3 Kattoor PS,Stalking,10
+2019,Coimbatore,Saravanampatti,Saravanampatti PS,Stalking,21
+2020,Coimbatore,Thudiyalur,Thudiyalur PS,Rape,9
+2022,Coimbatore,Singanallur,B7 Singanallur PS,Rape,24
+2021,Coimbatore,Podanur,Podanur PS,Rape,13
+2022,Coimbatore,Singanallur,B7 Singanallur PS,Rape,13
+2018,Coimbatore,Podanur,Podanur PS,Kidnapping,3
+2020,Coimbatore,Singanallur,B7 Singanallur PS,Stalking,14
+2022,Coimbatore,Gandhipuram,B3 Kattoor PS,Kidnapping,1
+2018,Coimbatore,Singanallur,B7 Singanallur PS,Domestic Violence,5
+2022,Coimbatore,Perur,Perur PS,Assault,12
+2019,Coimbatore,Town Hall,B1 Bazaar PS,Harassment,13
+2023,Coimbatore,Singanallur,B7 Singanallur PS,Rape,3
+2023,Coimbatore,Saravanampatti,Saravanampatti PS,Stalking,2
+2022,Coimbatore,Singanallur,B7 Singanallur PS,Assault,4
+2022,Coimbatore,Singanallur,B7 Singanallur PS,Rape,10
+2018,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Assault,22
+2019,Coimbatore,Town Hall,B1 Bazaar PS,Kidnapping,21
+2021,Coimbatore,Singanallur,B7 Singanallur PS,Assault,14
+2020,Coimbatore,Saravanampatti,Saravanampatti PS,Kidnapping,20
+2023,Coimbatore,Perur,Perur PS,Harassment,25
+2018,Coimbatore,Gandhipuram,B3 Kattoor PS,Harassment,22
+2018,Coimbatore,Peelamedu,B6 Peelamedu PS,Rape,25
+2022,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Assault,3
+2018,Coimbatore,Saibaba Colony,B4 Race Course PS,Rape,8
+2021,Coimbatore,Podanur,Podanur PS,Assault,24
+2023,Coimbatore,Saravanampatti,Saravanampatti PS,Assault,17
+2020,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Domestic Violence,11
+2023,Coimbatore,Gandhipuram,B3 Kattoor PS,Kidnapping,14
+2020,Coimbatore,Singanallur,B7 Singanallur PS,Assault,15
+2020,Coimbatore,RS Puram,B2 RS Puram PS,Harassment,21
+2018,Coimbatore,Saibaba Colony,B4 Race Course PS,Kidnapping,19
+2018,Coimbatore,Ukkadam,B1 Bazaar PS,Domestic Violence,22
+2023,Coimbatore,Peelamedu,B6 Peelamedu PS,Rape,6
+2023,Coimbatore,Gandhipuram,B3 Kattoor PS,Domestic Violence,18
+2021,Coimbatore,Thudiyalur,Thudiyalur PS,Domestic Violence,15
+2019,Coimbatore,Gandhipuram,B3 Kattoor PS,Kidnapping,18
+2022,Coimbatore,RS Puram,B2 RS Puram PS,Domestic Violence,12
+2021,Coimbatore,Thudiyalur,Thudiyalur PS,Kidnapping,21
+2021,Coimbatore,Perur,Perur PS,Rape,10
+2020,Coimbatore,Thudiyalur,Thudiyalur PS,Domestic Violence,3
+2018,Coimbatore,Saravanampatti,Saravanampatti PS,Harassment,19
+2021,Coimbatore,Saibaba Colony,B4 Race Course PS,Rape,9
+2019,Coimbatore,Singanallur,B7 Singanallur PS,Rape,25
+2021,Coimbatore,Thudiyalur,Thudiyalur PS,Assault,4
+2019,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Kidnapping,21
+2023,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Rape,20
+2022,Coimbatore,Saravanampatti,Saravanampatti PS,Domestic Violence,18
+2023,Coimbatore,Saibaba Colony,B4 Race Course PS,Kidnapping,14
+2021,Coimbatore,Saravanampatti,Saravanampatti PS,Stalking,18
+2022,Coimbatore,Town Hall,B1 Bazaar PS,Domestic Violence,24
+2022,Coimbatore,Ukkadam,B1 Bazaar PS,Rape,20
+2020,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Kidnapping,19
+2021,Coimbatore,Thudiyalur,Thudiyalur PS,Domestic Violence,1
+2020,Coimbatore,Ukkadam,B1 Bazaar PS,Stalking,18
+2018,Coimbatore,Saravanampatti,Saravanampatti PS,Harassment,15
+2019,Coimbatore,Podanur,Podanur PS,Assault,12
+2021,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Domestic Violence,21
+2020,Coimbatore,Town Hall,B1 Bazaar PS,Rape,24
+2022,Coimbatore,Peelamedu,B6 Peelamedu PS,Rape,16
+2018,Coimbatore,Peelamedu,B6 Peelamedu PS,Domestic Violence,10
+2023,Coimbatore,Podanur,Podanur PS,Assault,2
+2023,Coimbatore,Saravanampatti,Saravanampatti PS,Kidnapping,6
+2022,Coimbatore,Gandhipuram,B3 Kattoor PS,Assault,10
+2023,Coimbatore,Saravanampatti,Saravanampatti PS,Kidnapping,6
+2020,Coimbatore,Ukkadam,B1 Bazaar PS,Domestic Violence,23
+2021,Coimbatore,Thudiyalur,Thudiyalur PS,Kidnapping,15
+2018,Coimbatore,Saravanampatti,Saravanampatti PS,Kidnapping,2
+2020,Coimbatore,Ukkadam,B1 Bazaar PS,Kidnapping,3
+2020,Coimbatore,Ukkadam,B1 Bazaar PS,Domestic Violence,11
+2021,Coimbatore,Ukkadam,B1 Bazaar PS,Stalking,6
+2021,Coimbatore,Perur,Perur PS,Kidnapping,15
+2023,Coimbatore,Singanallur,B7 Singanallur PS,Rape,25
+2019,Coimbatore,Ukkadam,B1 Bazaar PS,Rape,4
+2022,Coimbatore,Gandhipuram,B3 Kattoor PS,Harassment,3
+2019,Coimbatore,Town Hall,B1 Bazaar PS,Domestic Violence,12
+2021,Coimbatore,Peelamedu,B6 Peelamedu PS,Kidnapping,14
+2019,Coimbatore,Thudiyalur,Thudiyalur PS,Harassment,24
+2021,Coimbatore,Gandhipuram,B3 Kattoor PS,Kidnapping,24
+2020,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Kidnapping,25
+2022,Coimbatore,Ukkadam,B1 Bazaar PS,Harassment,18
+2019,Coimbatore,Thudiyalur,Thudiyalur PS,Domestic Violence,3
+2021,Coimbatore,Singanallur,B7 Singanallur PS,Rape,13
+2019,Coimbatore,Perur,Perur PS,Stalking,22
+2021,Coimbatore,Singanallur,B7 Singanallur PS,Assault,15
+2019,Coimbatore,Peelamedu,B6 Peelamedu PS,Harassment,11
+2020,Coimbatore,Town Hall,B1 Bazaar PS,Harassment,14
+2019,Coimbatore,Peelamedu,B6 Peelamedu PS,Assault,20
+2022,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Stalking,17
+2023,Coimbatore,Ukkadam,B1 Bazaar PS,Harassment,16
+2022,Coimbatore,Peelamedu,B6 Peelamedu PS,Assault,12
+2021,Coimbatore,Podanur,Podanur PS,Kidnapping,13
+2020,Coimbatore,Perur,Perur PS,Harassment,23
+2018,Coimbatore,Town Hall,B1 Bazaar PS,Rape,16
+2019,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Kidnapping,1
+2021,Coimbatore,Saibaba Colony,B4 Race Course PS,Domestic Violence,2
+2020,Coimbatore,Saibaba Colony,B4 Race Course PS,Stalking,5
+2018,Coimbatore,Saibaba Colony,B4 Race Course PS,Rape,21
+2018,Coimbatore,Perur,Perur PS,Stalking,20
+2022,Coimbatore,Thudiyalur,Thudiyalur PS,Domestic Violence,8
+2018,Coimbatore,Podanur,Podanur PS,Kidnapping,8
+2018,Coimbatore,Gandhipuram,B3 Kattoor PS,Domestic Violence,5
+2021,Coimbatore,Singanallur,B7 Singanallur PS,Harassment,17
+2018,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Kidnapping,2
+2018,Coimbatore,Thudiyalur,Thudiyalur PS,Assault,9
+2018,Coimbatore,Saibaba Colony,B4 Race Course PS,Rape,4
+2018,Coimbatore,Saravanampatti,Saravanampatti PS,Assault,24
+2020,Coimbatore,Singanallur,B7 Singanallur PS,Assault,16
+2021,Coimbatore,Saravanampatti,Saravanampatti PS,Assault,20
+2023,Coimbatore,RS Puram,B2 RS Puram PS,Assault,2
+2020,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Harassment,25
+2021,Coimbatore,RS Puram,B2 RS Puram PS,Harassment,20
+2019,Coimbatore,Town Hall,B1 Bazaar PS,Harassment,23
+2021,Coimbatore,RS Puram,B2 RS Puram PS,Kidnapping,16
+2018,Coimbatore,Singanallur,B7 Singanallur PS,Kidnapping,10
+2022,Coimbatore,Perur,Perur PS,Assault,25
+2021,Coimbatore,Ukkadam,B1 Bazaar PS,Harassment,9
+2019,Coimbatore,Peelamedu,B6 Peelamedu PS,Domestic Violence,11
+2022,Coimbatore,Ukkadam,B1 Bazaar PS,Stalking,15
+2019,Coimbatore,Ukkadam,B1 Bazaar PS,Domestic Violence,7
+2018,Coimbatore,Ukkadam,B1 Bazaar PS,Assault,23
+2021,Coimbatore,Saravanampatti,Saravanampatti PS,Domestic Violence,18
+2023,Coimbatore,Podanur,Podanur PS,Assault,24
+2022,Coimbatore,Peelamedu,B6 Peelamedu PS,Kidnapping,14
+2020,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Rape,20
+2021,Coimbatore,RS Puram,B2 RS Puram PS,Kidnapping,25
+2019,Coimbatore,Thudiyalur,Thudiyalur PS,Stalking,13
+2022,Coimbatore,Town Hall,B1 Bazaar PS,Domestic Violence,24
+2022,Coimbatore,Ukkadam,B1 Bazaar PS,Rape,2
+2023,Coimbatore,Gandhipuram,B3 Kattoor PS,Stalking,2
+2022,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Assault,20
+2023,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Kidnapping,24
+2022,Coimbatore,Perur,Perur PS,Harassment,13
+2020,Coimbatore,Perur,Perur PS,Domestic Violence,10
+2023,Coimbatore,Saravanampatti,Saravanampatti PS,Domestic Violence,6
+2019,Coimbatore,Town Hall,B1 Bazaar PS,Assault,10
+2023,Coimbatore,Peelamedu,B6 Peelamedu PS,Domestic Violence,11
+2022,Coimbatore,Thudiyalur,Thudiyalur PS,Harassment,10
+2020,Coimbatore,Peelamedu,B6 Peelamedu PS,Rape,12
+2019,Coimbatore,Ukkadam,B1 Bazaar PS,Kidnapping,11
+2018,Coimbatore,Thudiyalur,Thudiyalur PS,Harassment,11
+2019,Coimbatore,Singanallur,B7 Singanallur PS,Harassment,6
+2021,Coimbatore,Town Hall,B1 Bazaar PS,Assault,14
+2020,Coimbatore,Saravanampatti,Saravanampatti PS,Kidnapping,10
+2020,Coimbatore,Singanallur,B7 Singanallur PS,Assault,6
+2023,Coimbatore,Peelamedu,B6 Peelamedu PS,Kidnapping,5
+2021,Coimbatore,Gandhipuram,B3 Kattoor PS,Assault,24
+2019,Coimbatore,Saravanampatti,Saravanampatti PS,Assault,25
+2018,Coimbatore,Saravanampatti,Saravanampatti PS,Rape,12
+2018,Coimbatore,Ukkadam,B1 Bazaar PS,Harassment,23
+2019,Coimbatore,Thudiyalur,Thudiyalur PS,Stalking,25
+2019,Coimbatore,Town Hall,B1 Bazaar PS,Kidnapping,5
+2020,Coimbatore,Gandhipuram,B3 Kattoor PS,Domestic Violence,24
+2021,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Harassment,16
+2018,Coimbatore,Podanur,Podanur PS,Stalking,1
+2019,Coimbatore,Peelamedu,B6 Peelamedu PS,Rape,19
+2023,Coimbatore,Saravanampatti,Saravanampatti PS,Assault,24
+2018,Coimbatore,RS Puram,B2 RS Puram PS,Domestic Violence,14
+2021,Coimbatore,Saravanampatti,Saravanampatti PS,Harassment,12
+2021,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Assault,25
+2021,Coimbatore,Perur,Perur PS,Stalking,20
+2018,Coimbatore,Thudiyalur,Thudiyalur PS,Assault,19
+2021,Coimbatore,Perur,Perur PS,Stalking,3
+2022,Coimbatore,Ukkadam,B1 Bazaar PS,Domestic Violence,17
+2018,Coimbatore,Peelamedu,B6 Peelamedu PS,Assault,10
+2021,Coimbatore,Singanallur,B7 Singanallur PS,Assault,6
+2023,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Rape,15
+2019,Coimbatore,Singanallur,B7 Singanallur PS,Harassment,6
+2023,Coimbatore,Podanur,Podanur PS,Kidnapping,15
+2021,Coimbatore,Gandhipuram,B3 Kattoor PS,Domestic Violence,21
+2020,Coimbatore,Thudiyalur,Thudiyalur PS,Stalking,1
+2022,Coimbatore,Podanur,Podanur PS,Kidnapping,23
+2020,Coimbatore,Ukkadam,B1 Bazaar PS,Assault,19
+2020,Coimbatore,Podanur,Podanur PS,Domestic Violence,11
+2022,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Stalking,3
+2020,Coimbatore,Peelamedu,B6 Peelamedu PS,Kidnapping,20
+2021,Coimbatore,Singanallur,B7 Singanallur PS,Assault,12
+2020,Coimbatore,Podanur,Podanur PS,Stalking,25
+2021,Coimbatore,Gandhipuram,B3 Kattoor PS,Kidnapping,12
+2019,Coimbatore,Peelamedu,B6 Peelamedu PS,Harassment,4
+2019,Coimbatore,Ukkadam,B1 Bazaar PS,Domestic Violence,15
+2022,Coimbatore,RS Puram,B2 RS Puram PS,Stalking,5
+2023,Coimbatore,Perur,Perur PS,Assault,3
+2019,Coimbatore,Perur,Perur PS,Stalking,11
+2018,Coimbatore,Singanallur,B7 Singanallur PS,Rape,22
+2021,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Kidnapping,12
+2020,Coimbatore,RS Puram,B2 RS Puram PS,Assault,20
+2022,Coimbatore,RS Puram,B2 RS Puram PS,Assault,3
+2020,Coimbatore,Saibaba Colony,B4 Race Course PS,Rape,25
+2022,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Domestic Violence,10
+2021,Coimbatore,Gandhipuram,B3 Kattoor PS,Harassment,14
+2021,Coimbatore,Gandhipuram,B3 Kattoor PS,Harassment,17
+2022,Coimbatore,Town Hall,B1 Bazaar PS,Domestic Violence,12
+2021,Coimbatore,Thudiyalur,Thudiyalur PS,Stalking,20
+2020,Coimbatore,Perur,Perur PS,Stalking,18
+2022,Coimbatore,Saravanampatti,Saravanampatti PS,Domestic Violence,15
+2023,Coimbatore,Gandhipuram,B3 Kattoor PS,Kidnapping,12
+2022,Coimbatore,Singanallur,B7 Singanallur PS,Domestic Violence,18
+2018,Coimbatore,Thudiyalur,Thudiyalur PS,Domestic Violence,2
+2020,Coimbatore,Saravanampatti,Saravanampatti PS,Assault,24
+2019,Coimbatore,Perur,Perur PS,Kidnapping,24
+2018,Coimbatore,Peelamedu,B6 Peelamedu PS,Assault,9
+2021,Coimbatore,Ukkadam,B1 Bazaar PS,Stalking,5
+2022,Coimbatore,Thudiyalur,Thudiyalur PS,Domestic Violence,25
+2020,Coimbatore,Perur,Perur PS,Assault,1
+2023,Coimbatore,Town Hall,B1 Bazaar PS,Domestic Violence,5
+2018,Coimbatore,RS Puram,B2 RS Puram PS,Stalking,16
+2023,Coimbatore,Peelamedu,B6 Peelamedu PS,Kidnapping,12
+2022,Coimbatore,Podanur,Podanur PS,Harassment,17
+2020,Coimbatore,Ukkadam,B1 Bazaar PS,Stalking,13
+2021,Coimbatore,Saravanampatti,Saravanampatti PS,Harassment,16
+2020,Coimbatore,Town Hall,B1 Bazaar PS,Harassment,14
+2022,Coimbatore,Gandhipuram,B3 Kattoor PS,Assault,7
+2019,Coimbatore,Singanallur,B7 Singanallur PS,Kidnapping,16
+2020,Coimbatore,Gandhipuram,B3 Kattoor PS,Harassment,3
+2023,Coimbatore,Saibaba Colony,B4 Race Course PS,Harassment,11
+2023,Coimbatore,Singanallur,B7 Singanallur PS,Assault,24
+2018,Coimbatore,Saravanampatti,Saravanampatti PS,Domestic Violence,4
+2021,Coimbatore,Saibaba Colony,B4 Race Course PS,Rape,15
+2019,Coimbatore,Ukkadam,B1 Bazaar PS,Harassment,18
+2020,Coimbatore,Gandhipuram,B3 Kattoor PS,Kidnapping,14
+2021,Coimbatore,Singanallur,B7 Singanallur PS,Domestic Violence,10
+2020,Coimbatore,Town Hall,B1 Bazaar PS,Rape,9
+2019,Coimbatore,Thudiyalur,Thudiyalur PS,Stalking,2
+2022,Coimbatore,Perur,Perur PS,Kidnapping,4
+2021,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Stalking,21
+2018,Coimbatore,Perur,Perur PS,Harassment,24
+2023,Coimbatore,Thudiyalur,Thudiyalur PS,Rape,1
+2022,Coimbatore,Gandhipuram,B3 Kattoor PS,Rape,5
+2018,Coimbatore,Peelamedu,B6 Peelamedu PS,Assault,1
+2019,Coimbatore,Thudiyalur,Thudiyalur PS,Kidnapping,9
+2021,Coimbatore,Town Hall,B1 Bazaar PS,Assault,3
+2020,Coimbatore,Kuniyamuthur,Kuniyamuthur PS,Domestic Violence,22
