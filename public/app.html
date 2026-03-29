@@ -7,6 +7,8 @@
     <title>Smart Safety Network | SREC Edition</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;700&display=swap"
         rel="stylesheet">
     <style>
@@ -236,12 +238,27 @@
                 <div class="logo">Safety<span>Grid</span></div><button onclick="syncGPS()"
                     style="width:auto; padding:5px 15px;">📍</button>
             </div>
-            <div id="realMap"></div>
-            <div class="form-card" id="routeInfo" style="display:none;">
-                <h4 id="roadName">Select a Route</h4>
+            <div class="form-card" style="margin-top:0;">
+                <input type="text" id="originSelect" placeholder="Enter Origin (e.g., CURRENT or SREC)" value="CURRENT">
+                <input type="text" id="destSelect" placeholder="Enter Destination (e.g., RS Puram)">
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <button onclick="findSafeRoute()" style="margin-top:0; padding:10px; flex:1;">FIND ROUTE</button>
+                    <button onclick="resetMap()" style="margin-top:0; padding:10px; flex:1; background:#444;">CLEAR
+                        MAP</button>
+                </div>
+            </div>
+
+            <div class="form-card" id="routeInfo" style="display:none; margin-top: 5px; flex-shrink: 0; padding:15px;">
+                <h4 id="roadName" style="margin-bottom: 5px;">Select a Route</h4>
                 <div id="scoreDisplay" class="score-badge">Score: --</div>
-                <p id="riskAnalysis" style="font-size:12px; margin-top:8px;"></p>
-                <div id="roadHistory" style="margin-top:10px;"></div>
+                <p id="riskAnalysis" style="font-size:13px; margin-top:8px; font-weight:bold;"></p>
+                <div id="roadHistory"
+                    style="margin-top:10px; max-height: 80px; overflow-y:auto; border-top:1px solid var(--border); padding-top:10px;">
+                </div>
+            </div>
+
+            <div id="realMap"
+                style="height: 400px; margin: 10px 15px 15px; border-radius: 20px; border: 1px solid var(--border); flex-shrink: 0;">
             </div>
         </div>
 
@@ -328,54 +345,204 @@
         }
 
         // --- MAP & SAFETY SCORING ENGINE ---
-        function initMap() {
+        let dangerNodes = [];
+        let dangerAreas = [];
+        let mapRoutingLine = null;
+        let mapCircles = [];
+
+        async function initMap() {
             if (map) return;
-            map = L.map('realMap').setView(userPos, 14);
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
-
-            // Sample Coimbatore Road Data with Risk Logic
-            const roads = [
-                { name: "Sathy Road (Near SREC)", coords: [[11.08, 76.99], [11.10, 77.01]], baseRisk: 10, crimeHistory: ["Theft reported 2025"] },
-                { name: "Gandhipuram Flyover Zone", coords: [[11.01, 76.96], [11.02, 76.97]], baseRisk: 50, crimeHistory: ["High Traffic", "Chain Snatching (Night)"] }
-            ];
-
-            roads.forEach(road => {
-                let score = calculateSafetyScore(road);
-                let color = score > 60 ? 'var(--safe)' : (score > 30 ? 'var(--warning)' : 'var(--accent)');
-
-                let line = L.polyline(road.coords, { color: color, weight: 8 }).addTo(map);
-                line.on('click', () => showRoadDetails(road, score));
-            });
+            map = L.map('realMap').setView(userPos, 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
             syncGPS();
+
+            try {
+                const res = await fetch('/api/v1/map-nodes');
+                const json = await res.json();
+                dangerNodes = json.data.danger_nodes || [];
+
+                // Group crimes by area for mapping
+                let areaCrimes = {};
+                dangerNodes.forEach(node => {
+                    let k = node.location.lat + "," + node.location.lng;
+                    if (!areaCrimes[k]) areaCrimes[k] = { loc: node.location, count: 0, types: new Set(), area: node.area };
+                    areaCrimes[k].count += node.cases || 1;
+                    if (node.crimeType) areaCrimes[k].types.add(node.crimeType);
+                });
+
+                dangerAreas = Object.values(areaCrimes);
+                // We no longer plot them globally here; we only pop them when intersected.
+            } catch (e) { console.error("Could not load backend map data", e); }
         }
 
-        function calculateSafetyScore(road) {
-            let score = 100;
-            const hour = new Date().getHours();
+        function resetMap() {
+            if (mapRoutingLine) map.removeLayer(mapRoutingLine);
+            mapRoutingLine = null;
+            mapCircles.forEach(c => map.removeLayer(c));
+            mapCircles = [];
+            document.getElementById('routeInfo').style.display = 'none';
+            document.getElementById('originSelect').value = 'CURRENT';
+            document.getElementById('destSelect').value = '';
+            map.setView(userPos, 13);
+        }
 
-            // 1. Reduce for Crime History (40%)
-            if (road.crimeHistory.length > 0) score -= 40;
+        async function geocodeLocation(query) {
+            query = query.trim();
+            if (query.toUpperCase() === 'CURRENT' || query.toUpperCase() === 'MY CURRENT LOCATION') return L.latLng(userPos[0], userPos[1]);
+            if (query.includes(',') && !isNaN(parseFloat(query.split(',')[0]))) return L.latLng(parseFloat(query.split(',')[0]), parseFloat(query.split(',')[1]));
 
-            // 2. Night Time Logic (80% reduction if after 10 PM)
-            if (hour >= 22 || hour <= 4) {
-                score -= 80;
+            try {
+                let searchQ = query.toLowerCase().includes('coimbatore') ? query : query + ', Coimbatore, Tamil Nadu, India';
+                const response = await fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(searchQ));
+                const data = await response.json();
+                if (data && data.length > 0) return L.latLng(parseFloat(data[0].lat), parseFloat(data[0].lon));
+            } catch (e) { console.error(e); }
+            return null;
+        }
+
+        async function findSafeRoute() {
+            let oVal = document.getElementById('originSelect').value;
+            let dVal = document.getElementById('destSelect').value;
+
+            document.getElementById('roadName').innerText = "Locating Coordinates...";
+            let infoBox = document.getElementById('routeInfo');
+            if (infoBox.style.display === 'none') {
+                infoBox.style.display = 'block';
+                if (map) setTimeout(() => map.invalidateSize(), 50);
+            }
+            document.getElementById('riskAnalysis').innerText = "Running geocoding index...";
+
+            let start = await geocodeLocation(oVal);
+            let end = await geocodeLocation(dVal);
+
+            if (!start || !end) {
+                document.getElementById('riskAnalysis').innerText = `⚠️ Error: Could not completely find location. Please check spelling.`;
+                return;
             }
 
-            return Math.max(score, 5); // Minimum score is 5
+            if (start.lat === end.lat && start.lng === end.lng) return alert("Origin and Destination are identical.");
+
+            document.getElementById('roadName').innerText = "Calculating Route...";
+            document.getElementById('riskAnalysis').innerText = "Analyzing safety via AI Engine...";
+
+            let router = L.Routing.osrmv1();
+            router.route([
+                { latLng: start },
+                { latLng: end }
+            ], function (err, routes) {
+                if (err || !routes || routes.length === 0) {
+                    document.getElementById('riskAnalysis').innerText = "⚠️ Error: Could not calculate a street route.";
+                    return;
+                }
+                drawAndEvaluateRoute(routes[0]);
+            });
         }
 
-        function showRoadDetails(road, score) {
-            const info = document.getElementById('routeInfo');
-            info.style.display = 'block';
-            document.getElementById('roadName').innerText = road.name;
+        function drawAndEvaluateRoute(route) {
+            let coords = route.coordinates;
+            let riskTicks = 0;
+            let closeCrimes = [];
+            let highlightedAreas = new Set();
 
+            mapCircles.forEach(c => map.removeLayer(c));
+            mapCircles = [];
+
+            coords.forEach(c => {
+                dangerAreas.forEach(area => {
+                    let dist = map.distance([c.lat, c.lng], [area.loc.lat, area.loc.lng]);
+                    if (dist < 500) {
+                        riskTicks += 1; // Simplified logic per coordinate intersection
+                        highlightedAreas.add(area);
+                        area.types.forEach(t => {
+                            if (!closeCrimes.includes(t)) closeCrimes.push(t);
+                        });
+                    }
+                });
+            });
+
+            highlightedAreas.forEach(ac => {
+                let cases = ac.count;
+                let radius = cases > 50 ? 25 : (cases > 20 ? 15 : 8);
+                let types = Array.from(ac.types).join(', ');
+
+                let circle = L.circleMarker([ac.loc.lat, ac.loc.lng], {
+                    color: '#ff0000', fillColor: '#ff0000', fillOpacity: 0.5, radius: radius
+                }).addTo(map);
+
+                circle.bindPopup(`
+                    <div style="color:#000;">
+                        <b>🚨 DANGER AREA: ${ac.area || 'Hotspot'}</b><br>
+                        Incident Reports: ${cases}<br>
+                        Types: ${types}
+                    </div>
+                `);
+                mapCircles.push(circle);
+            });
+
+            // Detailed Risk Calculation Engine
+            let score = 100;
+            const currentHour = new Date().getHours();
+            const isNight = (currentHour >= 22 || currentHour <= 4); // 10 PM to 4 AM
+            const isEvening = (currentHour >= 18 && currentHour < 22);
+
+            let penaltyDetails = [];
+
+            if (highlightedAreas.size > 0) {
+                let totalCasesEncountered = 0;
+                highlightedAreas.forEach(a => totalCasesEncountered += a.count);
+
+                let historicalPenalty = Math.min(60, totalCasesEncountered * 1.5);
+                score -= historicalPenalty;
+                penaltyDetails.push(`⚠️ Historical Crimes Penalty: -${Math.round(historicalPenalty)} pts (${totalCasesEncountered} past cases)`);
+            }
+
+            // Time-of-day Risk Multiplier
+            if (isNight) {
+                if (highlightedAreas.size > 0) {
+                    score -= 25;
+                    penaltyDetails.push(`🌙 Severe Night Travel Risk: -25 pts`);
+                } else {
+                    score -= 10;
+                    penaltyDetails.push(`🌙 General Night Travel: -10 pts`);
+                }
+            } else if (isEvening) {
+                score -= 5;
+                penaltyDetails.push(`🌆 Evening Travel: -5 pts`);
+            }
+
+            // Bound score limits
+            if (score < 5) score = 5;
+            if (score > 100) score = 100;
+
+            let color = score > 60 ? 'var(--safe)' : (score > 30 ? 'var(--warning)' : 'var(--accent)');
+
+            if (mapRoutingLine) map.removeLayer(mapRoutingLine);
+            mapRoutingLine = L.polyline(coords, { color: color, weight: 6, opacity: 0.8 }).addTo(map);
+
+            // Adjust bounds gently
+            map.fitBounds(mapRoutingLine.getBounds(), { padding: [30, 30] });
+
+            showRouteDetails(score, closeCrimes, penaltyDetails);
+        }
+
+        function showRouteDetails(score, closeCrimes, penaltyDetails) {
+            document.getElementById('roadName').innerText = "Route Safety Analysis";
             const badge = document.getElementById('scoreDisplay');
-            badge.innerText = `Safety Score: ${score}%`;
-            badge.style.background = score > 50 ? 'green' : 'red';
+            badge.innerText = `Safety Score: ${Math.round(score)}%`;
+            badge.style.background = score > 60 ? 'green' : (score > 30 ? 'orange' : 'red');
 
-            document.getElementById('riskAnalysis').innerText = score < 30 ? "⚠️ HIGH RISK: Avoid this route at this hour." : "✅ Clear path according to data.";
+            document.getElementById('riskAnalysis').innerText = score < 30 ? "⚠️ HIGH RISK: Path intersects major historical crime hotspots." : (score < 60 ? "⚠️ CAUTION: Proceed with care." : "✅ Clear path according to data.");
 
-            document.getElementById('roadHistory').innerHTML = road.crimeHistory.map(h => `<div class="history-item">🕒 ${h}</div>`).join('');
+            let histHtml = closeCrimes.slice(0, 5).map(h => `<div class="history-item">⚠️ History of ${h || 'Incident'} on route</div>`).join('');
+
+            if (penaltyDetails && penaltyDetails.length > 0) {
+                histHtml += `<br><strong style="font-size:11px; color:#fff;">Algorithm Calculation Details:</strong>`;
+                penaltyDetails.forEach(p => {
+                    histHtml += `<div class="history-item" style="color:var(--warning);">${p}</div>`;
+                });
+            }
+
+            document.getElementById('roadHistory').innerHTML = histHtml || `<div class="history-item">✅ No major incidents reported nearby. No penalties applied.</div>`;
         }
 
         // --- CRIME REPORTING ---
