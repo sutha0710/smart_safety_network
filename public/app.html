@@ -136,6 +136,8 @@
             font-size: 32px;
             font-weight: 900;
             box-shadow: 0 0 30px rgba(255, 42, 92, 0.4);
+            cursor: pointer;
+            user-select: none;
         }
 
         .bottom-nav {
@@ -162,6 +164,9 @@
             color: var(--safe);
         }
 
+        /* ============================================================
+           SOS OVERLAY
+        ============================================================ */
         #sosOverlay {
             display: none;
             position: fixed;
@@ -172,6 +177,140 @@
             align-items: center;
             justify-content: center;
             text-align: center;
+            animation: sosPulse 0.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes sosPulse {
+            from {
+                background: #cc0030;
+            }
+
+            to {
+                background: #ff2a5c;
+            }
+        }
+
+        /* ============================================================
+           SENSOR HUD CARDS
+        ============================================================ */
+        .sensor-hud {
+            margin: 0 15px 10px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .sensor-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            transition: border-color 0.3s;
+        }
+
+        .sensor-card.alert {
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(255, 42, 92, 0.3);
+            animation: cardPulse 0.6s ease-in-out infinite alternate;
+        }
+
+        .sensor-card.ok {
+            border-color: var(--safe);
+        }
+
+        @keyframes cardPulse {
+            from {
+                box-shadow: 0 0 8px rgba(255, 42, 92, 0.3);
+            }
+
+            to {
+                box-shadow: 0 0 25px rgba(255, 42, 92, 0.7);
+            }
+        }
+
+        .sensor-card .s-icon {
+            font-size: 22px;
+        }
+
+        .sensor-card .s-label {
+            font-size: 9px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .sensor-card .s-value {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--text);
+        }
+
+        .sensor-card .s-status {
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        /* ============================================================
+           FALL / PANIC ALERT BANNER
+        ============================================================ */
+        #alertBanner {
+            display: none;
+            margin: 0 15px 10px;
+            background: var(--accent);
+            border-radius: 14px;
+            padding: 12px 16px;
+            font-size: 13px;
+            font-weight: bold;
+            animation: bannerSlide 0.4s ease;
+        }
+
+        @keyframes bannerSlide {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* MOTION BAR */
+        .motion-bar-wrap {
+            margin-top: 6px;
+            height: 6px;
+            background: #14142b;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .motion-bar-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.2s ease, background 0.2s;
+            width: 0%;
+            background: var(--safe);
+        }
+
+        /* BPM BAR */
+        .bpm-bar-wrap {
+            margin-top: 6px;
+            height: 6px;
+            background: #14142b;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .bpm-bar-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.4s ease, background 0.4s;
+            width: 0%;
+            background: var(--safe);
         }
 
         .toggle-row {
@@ -180,6 +319,22 @@
             align-items: center;
             padding: 12px 0;
             border-bottom: 1px solid var(--border);
+        }
+
+        /* Sensor toggle status pill */
+        .toggle-row .status-pill {
+            font-size: 10px;
+            font-weight: bold;
+            padding: 3px 9px;
+            border-radius: 20px;
+            background: #14142b;
+            color: var(--muted);
+            transition: 0.3s;
+        }
+
+        .toggle-row .status-pill.on {
+            background: var(--safe);
+            color: #000;
         }
 
         .score-badge {
@@ -197,19 +352,30 @@
             margin-top: 5px;
             font-size: 12px;
         }
+
+        /* G-FORCE meter in settings */
+        #gforceDisplay {
+            margin-top: 10px;
+            font-size: 12px;
+            color: var(--muted);
+        }
     </style>
 </head>
 
 <body>
     <div class="phone">
+
+        <!-- SOS OVERLAY -->
         <div id="sosOverlay">
             <h1 style="font-size: 40px;">🚨 EMERGENCY 🚨</h1>
+            <p id="sosReason" style="margin-bottom:5px; font-size:14px;">Manual SOS Triggered</p>
             <p>Alerting Guardians & Police in...</p>
             <h1 id="timer" style="font-size: 80px; margin: 20px 0;">5</h1>
             <button onclick="stopSOS()" style="background:#fff; color:#000; width:auto; padding:15px 50px;">CANCEL
                 SOS</button>
         </div>
 
+        <!-- SPLASH / LOGIN -->
         <div class="screen active" id="splash">
             <div style="text-align:center; margin-top:80px; font-size:60px;">🛡️</div>
             <h1 class="logo" style="text-align:center;">Safety<span>Net</span></h1>
@@ -220,23 +386,79 @@
             </div>
         </div>
 
+        <!-- HOME -->
         <div class="screen" id="home">
             <div class="header">
                 <div class="logo">Safety<span>Net</span></div>
                 <div id="clock" style="font-weight:bold; color:var(--safe)">00:00</div>
             </div>
-            <div class="sos-btn" onclick="triggerSOS()">SOS</div>
-            <div class="form-card">
-                <h4 style="color:var(--safe)">LIVE SENSOR HUD</h4>
-                <p id="sensorStatus" style="font-size:12px; margin-top:10px; color:var(--muted)">Sensors Standby...</p>
-                <p id="heartDisplay" style="margin-top:5px; font-weight:bold;">💓 BPM: --</p>
+
+            <!-- SOS Button -->
+            <div class="sos-btn" onclick="triggerSOS('Manual SOS Triggered')">SOS</div>
+
+            <!-- Alert Banner (shown on fall/panic) -->
+            <div id="alertBanner">⚠️ <span id="alertText">Impact Detected!</span></div>
+
+            <!-- LIVE SENSOR HUD CARDS -->
+            <div class="sensor-hud">
+
+                <!-- FALL DETECTION CARD -->
+                <div class="sensor-card" id="cardFall">
+                    <div class="s-icon">📉</div>
+                    <div class="s-label">Fall / Impact</div>
+                    <div class="s-value" id="gforceVal">-- G</div>
+                    <div class="motion-bar-wrap">
+                        <div class="motion-bar-fill" id="gforceBar"></div>
+                    </div>
+                    <div class="s-status" id="fallStatus" style="color:var(--muted)">SENSOR OFF</div>
+                </div>
+
+                <!-- PANIC RUNNING CARD -->
+                <div class="sensor-card" id="cardRun">
+                    <div class="s-icon">🏃</div>
+                    <div class="s-label">Panic Motion</div>
+                    <div class="s-value" id="motionCount">0 / 10</div>
+                    <div class="motion-bar-wrap">
+                        <div class="motion-bar-fill" id="motionBar"></div>
+                    </div>
+                    <div class="s-status" id="runStatus" style="color:var(--muted)">SENSOR OFF</div>
+                </div>
+
+                <!-- HEARTBEAT CARD -->
+                <div class="sensor-card" id="cardHeart">
+                    <div class="s-icon">💓</div>
+                    <div class="s-label">Heart Rate</div>
+                    <div class="s-value" id="bpmVal">-- BPM</div>
+                    <div class="bpm-bar-wrap">
+                        <div class="bpm-bar-fill" id="bpmBar"></div>
+                    </div>
+                    <div class="s-status" id="heartStatus" style="color:var(--muted)">SENSOR OFF</div>
+                </div>
+
+                <!-- SCREAM CARD -->
+                <div class="sensor-card" id="cardScream">
+                    <div class="s-icon">🎙️</div>
+                    <div class="s-label">Scream Detect</div>
+                    <div class="s-value" id="volVal">0%</div>
+                    <div class="motion-bar-wrap">
+                        <div class="motion-bar-fill" id="volBar"></div>
+                    </div>
+                    <div class="s-status" id="screamStatus" style="color:var(--muted)">SENSOR OFF</div>
+                </div>
+            </div>
+
+            <div class="form-card" style="margin-top:0;">
+                <h4 style="color:var(--safe)">SYSTEM STATUS</h4>
+                <p id="sensorStatus" style="font-size:12px; margin-top:10px; color:var(--muted)">Enable sensors in ⚙️
+                    SET tab</p>
             </div>
         </div>
 
+        <!-- MAP -->
         <div class="screen" id="map">
             <div class="header">
-                <div class="logo">Safety<span>Grid</span></div><button onclick="syncGPS()"
-                    style="width:auto; padding:5px 15px;">📍</button>
+                <div class="logo">Safety<span>Grid</span></div>
+                <button onclick="syncGPS()" style="width:auto; padding:5px 15px;">📍</button>
             </div>
             <div class="form-card" style="margin-top:0;">
                 <input type="text" id="originSelect" placeholder="Enter Origin (e.g., CURRENT or SREC)" value="CURRENT">
@@ -262,6 +484,7 @@
             </div>
         </div>
 
+        <!-- REPORT -->
         <div class="screen" id="report">
             <div class="header">
                 <div class="logo">Report<span>Log</span></div>
@@ -278,6 +501,7 @@
             </div>
         </div>
 
+        <!-- CIRCLE -->
         <div class="screen" id="circle">
             <div class="header">
                 <div class="logo">Safety<span>Circle</span></div>
@@ -290,20 +514,84 @@
             <div id="gList" style="padding:0 20px;"></div>
         </div>
 
+        <!-- SETTINGS / SENSORS -->
         <div class="screen" id="settings">
             <div class="header">
                 <div class="logo">AI<span>Sensors</span></div>
             </div>
+
             <div class="form-card">
-                <div class="toggle-row"><span>Fall Detection</span><input type="checkbox" id="fallSens"></div>
-                <div class="toggle-row"><span>Heartrate Sync</span><input type="checkbox" id="heartSens"
-                        onchange="toggleHeart()"></div>
-                <div class="toggle-row"><span>Scream Trigger</span><input type="checkbox" id="screamSens"></div>
+                <h4 style="color:var(--safe); margin-bottom:10px;">SENSOR CONFIGURATION</h4>
+
+                <!-- Fall Detection -->
+                <div class="toggle-row">
+                    <div>
+                        <div>📉 Fall Detection</div>
+                        <div style="font-size:11px; color:var(--muted);">Triggers at 35G impact spike</div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span class="status-pill" id="pillFall">OFF</span>
+                        <input type="checkbox" id="fallSens" onchange="onToggleFall()">
+                    </div>
+                </div>
+
+                <!-- Panic Running -->
+                <div class="toggle-row">
+                    <div>
+                        <div>🏃 Panic Running</div>
+                        <div style="font-size:11px; color:var(--muted);">Triggers after 10× sustained 15G+ spikes</div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span class="status-pill" id="pillRun">OFF</span>
+                        <input type="checkbox" id="runSens" onchange="onToggleRun()">
+                    </div>
+                </div>
+
+                <!-- Heartrate -->
+                <div class="toggle-row">
+                    <div>
+                        <div>💓 Heartrate Sync</div>
+                        <div style="font-size:11px; color:var(--muted);">Simulated BPM — triggers above 105 BPM</div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span class="status-pill" id="pillHeart">OFF</span>
+                        <input type="checkbox" id="heartSens" onchange="toggleHeart()">
+                    </div>
+                </div>
+
+                <!-- Scream -->
+                <div class="toggle-row">
+                    <div>
+                        <div>🎙️ Scream Trigger</div>
+                        <div style="font-size:11px; color:var(--muted);">Microphone audio threshold detection</div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span class="status-pill" id="pillScream">OFF</span>
+                        <input type="checkbox" id="screamSens" onchange="onToggleScream()">
+                    </div>
+                </div>
+
+                <!-- Live G-Force readout -->
+                <div id="gforceDisplay">📡 G-Force: Waiting for motion data...</div>
+            </div>
+
+            <div class="form-card">
+                <h4 style="color:var(--warning); margin-bottom:10px;">HOW IT WORKS</h4>
+                <p style="font-size:11px; color:var(--muted); line-height:1.6;">
+                    <b style="color:#fff;">Fall:</b> Uses accelerometer formula √(X²+Y²+Z²). Spike &gt;35G = impact
+                    detected.<br><br>
+                    <b style="color:#fff;">Panic Run:</b> Counts how many times motion exceeds 15G. 10+ consecutive
+                    spikes = panic sprint.<br><br>
+                    <b style="color:#fff;">Heartrate:</b> Simulates BPM every 3s (60–110). Value &gt;105 triggers
+                    alert.<br><br>
+                    <b style="color:#fff;">Scream:</b> Reads mic amplitude. Volume &gt;85% triggers combined alert.
+                </p>
                 <button onclick="localStorage.clear(); location.reload();"
                     style="background:#14142b; color:var(--accent);">FORCE LOGOUT</button>
             </div>
         </div>
 
+        <!-- BOTTOM NAV -->
         <div class="bottom-nav" id="nav">
             <div class="nav-item active" onclick="nav('home')">🏠<br>HOME</div>
             <div class="nav-item" onclick="nav('map')">🗺️<br>GRID</div>
@@ -314,13 +602,42 @@
     </div>
 
     <script>
+        // ================================================================
+        //  STATE
+        // ================================================================
         let map, userMarker, userPos = [11.0168, 76.9558];
-        let heartbeatInterval;
+        let heartbeatInterval = null;
+        let screamInitialized = false;
 
-        // --- AUTH & NAV ---
+        // Sensor readings (live)
+        let currentBPM = 60;
+        let currentVolume = 0;
+        let currentGForce = 0;
+        let panicMotionCount = 0;
+
+        // Multi-sensor combo flag
+        let activeEmergency = false;
+
+        // Map routing state
+        let dangerNodes = [];
+        let dangerAreas = [];
+        let mapRoutingLine = null;
+        let mapCircles = [];
+
+        let guardians = [
+            { name: "Mom (Primary)", phone: "+91 98765 43210" },
+            { name: "Local Police Control", phone: "100" },
+            { name: "Women's Helpline", phone: "1091" }
+        ];
+
+        let sosTriggered = false;
+
+        // ================================================================
+        //  AUTH & NAV
+        // ================================================================
         function login() {
-            const name = document.getElementById('uName').value;
-            const phone = document.getElementById('uPhone').value;
+            const name = document.getElementById('uName').value.trim();
+            const phone = document.getElementById('uPhone').value.trim();
             if (!name || !phone) return alert("Please enter credentials");
             localStorage.setItem('userPhone', phone);
             localStorage.setItem('userName', name);
@@ -333,23 +650,416 @@
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.getElementById(id).classList.add('active');
+            const items = document.querySelectorAll('.nav-item');
+            const ids = ['home', 'map', 'report', 'circle', 'settings'];
+            const idx = ids.indexOf(id);
+            if (idx >= 0) items[idx].classList.add('active');
             if (id === 'map') setTimeout(initMap, 100);
         }
 
-        // --- CLOCK & AUTOMATIC TIME LOGIC ---
+        // ================================================================
+        //  CLOCK
+        // ================================================================
         function startClock() {
             setInterval(() => {
                 const now = new Date();
-                document.getElementById('clock').innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                document.getElementById('clock').innerText =
+                    now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             }, 1000);
         }
 
-        // --- MAP & SAFETY SCORING ENGINE ---
-        let dangerNodes = [];
-        let dangerAreas = [];
-        let mapRoutingLine = null;
-        let mapCircles = [];
+        // ================================================================
+        //  ALERT BANNER HELPER
+        // ================================================================
+        function showAlertBanner(msg) {
+            const banner = document.getElementById('alertBanner');
+            document.getElementById('alertText').innerText = msg;
+            banner.style.display = 'block';
+            setTimeout(() => { banner.style.display = 'none'; }, 6000);
+        }
 
+        // ================================================================
+        //  SENSOR CARD HELPERS
+        // ================================================================
+        function setCardState(cardId, state /* 'normal'|'ok'|'alert' */) {
+            const card = document.getElementById(cardId);
+            card.classList.remove('alert', 'ok');
+            if (state === 'alert') card.classList.add('alert');
+            if (state === 'ok') card.classList.add('ok');
+        }
+
+        function updateStatusLine(elId, msg, color) {
+            const el = document.getElementById(elId);
+            el.innerText = msg;
+            el.style.color = color;
+        }
+
+        // ================================================================
+        //  TOGGLE PILL HELPER
+        // ================================================================
+        function setPill(pillId, on) {
+            const pill = document.getElementById(pillId);
+            pill.innerText = on ? 'ON' : 'OFF';
+            pill.classList.toggle('on', on);
+        }
+
+        // ================================================================
+        //  📉  FALL DETECTION  +  🏃 PANIC RUNNING
+        //  Both share the devicemotion event.
+        // ================================================================
+        let motionListenerActive = false;
+        let motionHandler = null;
+
+        function startMotionListener() {
+            if (motionListenerActive) return;
+            motionListenerActive = true;
+
+            motionHandler = function (e) {
+                const acc = e.accelerationIncludingGravity;
+                if (!acc || acc.x == null) return;
+
+                // Total G-force using 3D Pythagorean formula
+                const total = Math.sqrt(acc.x ** 2 + acc.y ** 2 + acc.z ** 2);
+                currentGForce = total;
+
+                // Settings live readout
+                document.getElementById('gforceDisplay').innerText =
+                    `📡 G-Force: ${total.toFixed(1)} G  (X:${acc.x?.toFixed(1)} Y:${acc.y?.toFixed(1)} Z:${acc.z?.toFixed(1)})`;
+
+                const fallEnabled = document.getElementById('fallSens').checked;
+                const runEnabled = document.getElementById('runSens').checked;
+
+                // --- Update FALL card ---
+                if (fallEnabled) {
+                    const pct = Math.min(100, (total / 40) * 100);
+                    document.getElementById('gforceVal').innerText = total.toFixed(1) + ' G';
+                    document.getElementById('gforceBar').style.width = pct + '%';
+                    document.getElementById('gforceBar').style.background =
+                        total > 35 ? 'var(--accent)' : (total > 15 ? 'var(--warning)' : 'var(--safe)');
+
+                    if (total > 35) {
+                        // ====== FALL DETECTED ======
+                        setCardState('cardFall', 'alert');
+                        updateStatusLine('fallStatus', '⚠️ FALL DETECTED!', 'var(--accent)');
+                        document.getElementById('sensorStatus').innerText = '⚠️ Fall Impact Detected!';
+                        showAlertBanner('📉 Fall Impact Detected! Triggering SOS...');
+                        triggerSOS('📉 Fall Impact Detected!');
+
+                        const uName = localStorage.getItem('userName') || 'Unknown';
+                        const locData = { lat: userPos[0], lng: userPos[1] };
+                        fetch('/api/v1/sensor/trigger', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ userName: uName, type: 'FALL_DETECTED', value: 'Impact Force: ' + total.toFixed(1) + 'G', loc: locData })
+                        }).catch(err => console.error(err));
+
+                    } else {
+                        setCardState('cardFall', 'ok');
+                        updateStatusLine('fallStatus', 'MONITORING', 'var(--safe)');
+                    }
+                }
+
+                // --- Update PANIC RUNNING card ---
+                if (runEnabled) {
+                    if (total > 15) {
+                        panicMotionCount++;
+                    } else {
+                        panicMotionCount = Math.max(0, panicMotionCount - 1); // decay
+                    }
+
+                    const pct = Math.min(100, (panicMotionCount / 10) * 100);
+                    document.getElementById('motionCount').innerText = panicMotionCount + ' / 10';
+                    document.getElementById('motionBar').style.width = pct + '%';
+                    document.getElementById('motionBar').style.background =
+                        panicMotionCount >= 10 ? 'var(--accent)' : (panicMotionCount >= 6 ? 'var(--warning)' : 'var(--safe)');
+
+                    if (panicMotionCount >= 10) {
+                        // ====== PANIC RUNNING DETECTED ======
+                        setCardState('cardRun', 'alert');
+                        updateStatusLine('runStatus', '🏃 PANIC RUN!', 'var(--accent)');
+                        document.getElementById('sensorStatus').innerText = '⚠️ Panic Running Detected!';
+                        showAlertBanner('🏃 Panic Running Detected! Triggering SOS...');
+                        triggerSOS('🏃 Panic Running Detected!');
+                        panicMotionCount = 0; // Reset after trigger
+
+                        const uName = localStorage.getItem('userName') || 'Unknown';
+                        const locData = { lat: userPos[0], lng: userPos[1] };
+                        fetch('/api/v1/sensor/trigger', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ userName: uName, type: 'RUNNING_PANIC', value: 'Sustained High Motion (10+ spikes)', loc: locData })
+                        }).catch(err => console.error(err));
+
+                    } else {
+                        setCardState('cardRun', panicMotionCount > 5 ? 'alert' : 'ok');
+                        updateStatusLine('runStatus',
+                            panicMotionCount > 5 ? '⚡ HIGH MOTION' : 'MONITORING',
+                            panicMotionCount > 5 ? 'var(--warning)' : 'var(--safe)');
+                    }
+                }
+            };
+
+            window.addEventListener('devicemotion', motionHandler);
+        }
+
+        function stopMotionListener() {
+            if (motionHandler) window.removeEventListener('devicemotion', motionHandler);
+            motionListenerActive = false;
+        }
+
+        function onToggleFall() {
+            const on = document.getElementById('fallSens').checked;
+            setPill('pillFall', on);
+            if (on) {
+                startMotionListener();
+                setCardState('cardFall', 'ok');
+                updateStatusLine('fallStatus', 'MONITORING', 'var(--safe)');
+            } else {
+                setCardState('cardFall', 'normal');
+                updateStatusLine('fallStatus', 'SENSOR OFF', 'var(--muted)');
+                document.getElementById('gforceVal').innerText = '-- G';
+                document.getElementById('gforceBar').style.width = '0%';
+                if (!document.getElementById('runSens').checked) stopMotionListener();
+            }
+        }
+
+        function onToggleRun() {
+            const on = document.getElementById('runSens').checked;
+            setPill('pillRun', on);
+            if (on) {
+                startMotionListener();
+                setCardState('cardRun', 'ok');
+                updateStatusLine('runStatus', 'MONITORING', 'var(--safe)');
+            } else {
+                setCardState('cardRun', 'normal');
+                updateStatusLine('runStatus', 'SENSOR OFF', 'var(--muted)');
+                panicMotionCount = 0;
+                document.getElementById('motionCount').innerText = '0 / 10';
+                document.getElementById('motionBar').style.width = '0%';
+                if (!document.getElementById('fallSens').checked) stopMotionListener();
+            }
+        }
+
+        // ================================================================
+        //  💓  HEARTBEAT INTEGRATION (Simulated BPM)
+        //
+        //  Every 3 seconds: random BPM between 60–110.
+        //  If BPM > 105 AND scream > 85%: combined alert fires.
+        //  If BPM > 105 alone: standalone heartrate alert.
+        // ================================================================
+        function toggleHeart() {
+            const on = document.getElementById('heartSens').checked;
+            setPill('pillHeart', on);
+
+            if (on) {
+                setCardState('cardHeart', 'ok');
+                updateStatusLine('heartStatus', 'SYNCING...', 'var(--safe)');
+
+                heartbeatInterval = setInterval(() => {
+                    // Simulate realistic BPM with weighted random
+                    // Most readings: 60–85 (calm). Occasional spikes to 90–110 (stress).
+                    const rand = Math.random();
+                    if (rand < 0.8) {
+                        currentBPM = Math.floor(Math.random() * 25 + 60); // 60–85
+                    } else {
+                        currentBPM = Math.floor(Math.random() * 20 + 90); // 90–110
+                    }
+
+                    // Update HUD card
+                    const pct = Math.min(100, ((currentBPM - 40) / 80) * 100);
+                    document.getElementById('bpmVal').innerText = currentBPM + ' BPM';
+                    document.getElementById('bpmBar').style.width = pct + '%';
+                    document.getElementById('bpmBar').style.background =
+                        currentBPM > 105 ? 'var(--accent)' : (currentBPM > 90 ? 'var(--warning)' : 'var(--safe)');
+
+                    if (currentBPM > 105) {
+                        setCardState('cardHeart', 'alert');
+                        updateStatusLine('heartStatus', '⚠️ HIGH BPM!', 'var(--accent)');
+                    } else {
+                        setCardState('cardHeart', 'ok');
+                        updateStatusLine('heartStatus', currentBPM + ' BPM LIVE', 'var(--safe)');
+                    }
+
+                    // Evaluate multi-sensor combo
+                    evaluateMultiSensorEmergency();
+
+                    // Standalone heartrate alert if very high (> 108) without needing scream
+                    if (currentBPM > 108 && !activeEmergency) {
+                        activeEmergency = true;
+                        showAlertBanner('💓 Critical BPM Spike! SOS Triggered!');
+                        triggerSOS('💓 Critical Heartrate Spike (' + currentBPM + ' BPM)');
+
+                        const uName = localStorage.getItem('userName') || 'Unknown';
+                        const locData = { lat: userPos[0], lng: userPos[1] };
+                        fetch('/api/v1/sensor/trigger', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ userName: uName, type: 'HEARTBEAT_HIGH', value: currentBPM + ' BPM', loc: locData })
+                        }).catch(e => console.error(e));
+
+                        setTimeout(() => { activeEmergency = false; }, 30000);
+                    }
+
+                }, 3000);
+
+            } else {
+                clearInterval(heartbeatInterval);
+                heartbeatInterval = null;
+                currentBPM = 60;
+                setCardState('cardHeart', 'normal');
+                updateStatusLine('heartStatus', 'SENSOR OFF', 'var(--muted)');
+                document.getElementById('bpmVal').innerText = '-- BPM';
+                document.getElementById('bpmBar').style.width = '0%';
+            }
+        }
+
+        // ================================================================
+        //  🎙️  SCREAM DETECTION SENSOR
+        //  Uses Web Audio API to measure mic amplitude in real time.
+        //  Volume 0.0 – 1.0. Threshold: > 0.85 (85%)
+        // ================================================================
+        async function initScreamDetection() {
+            if (screamInitialized) return;
+            screamInitialized = true;
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const source = audioContext.createMediaStreamSource(stream);
+                const processor = audioContext.createScriptProcessor(2048, 1, 1);
+
+                source.connect(processor);
+                processor.connect(audioContext.destination);
+
+                processor.onaudioprocess = (e) => {
+                    if (!document.getElementById('screamSens').checked) return;
+
+                    const input = e.inputBuffer.getChannelData(0);
+                    currentVolume = Math.max(...input.map(Math.abs));
+
+                    const pct = Math.round(currentVolume * 100);
+                    document.getElementById('volVal').innerText = pct + '%';
+                    document.getElementById('volBar').style.width = pct + '%';
+                    document.getElementById('volBar').style.background =
+                        currentVolume > 0.85 ? 'var(--accent)' : (currentVolume > 0.6 ? 'var(--warning)' : 'var(--safe)');
+
+                    if (currentVolume > 0.85) {
+                        setCardState('cardScream', 'alert');
+                        updateStatusLine('screamStatus', '🎙️ SCREAM!', 'var(--accent)');
+                    } else {
+                        setCardState('cardScream', 'ok');
+                        updateStatusLine('screamStatus', 'LISTENING', 'var(--safe)');
+                    }
+
+                    evaluateMultiSensorEmergency();
+                };
+
+            } catch (err) {
+                console.log("Mic access denied or HTTPS required");
+                updateStatusLine('screamStatus', 'MIC DENIED', 'var(--accent)');
+            }
+        }
+
+        function onToggleScream() {
+            const on = document.getElementById('screamSens').checked;
+            setPill('pillScream', on);
+            if (on) {
+                initScreamDetection();
+                setCardState('cardScream', 'ok');
+                updateStatusLine('screamStatus', 'LISTENING', 'var(--safe)');
+            } else {
+                setCardState('cardScream', 'normal');
+                updateStatusLine('screamStatus', 'SENSOR OFF', 'var(--muted)');
+                currentVolume = 0;
+                document.getElementById('volVal').innerText = '0%';
+                document.getElementById('volBar').style.width = '0%';
+            }
+        }
+
+        // ================================================================
+        //  🔗  MULTI-SENSOR COMBO TRIGGER
+        //  Fires only when BOTH heartrate > 105 AND scream > 85%
+        // ================================================================
+        function evaluateMultiSensorEmergency() {
+            if (activeEmergency) return;
+
+            const heartOn = document.getElementById('heartSens').checked;
+            const screamOn = document.getElementById('screamSens').checked;
+
+            if (heartOn && screamOn && currentBPM > 105 && currentVolume > 0.85) {
+                activeEmergency = true;
+
+                showAlertBanner('💓🎙️ COMBINED ALERT: High BPM + Scream detected!');
+                triggerSOS('💓🎙️ Combined Sensor Alert: High BPM + Scream');
+
+                const uName = localStorage.getItem('userName') || 'Unknown';
+                const locData = { lat: userPos[0], lng: userPos[1] };
+
+                fetch('/api/v1/sensor/trigger', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userName: uName, type: 'HEARTBEAT_HIGH', value: currentBPM + ' BPM', loc: locData })
+                }).catch(e => console.error(e));
+
+                fetch('/api/v1/sensor/trigger', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userName: uName, type: 'SCREAM_DETECTED', value: 'Volume: ' + Math.round(currentVolume * 100) + '%', loc: locData })
+                }).catch(e => console.error(e));
+
+                // 30s cooldown to prevent database flooding
+                setTimeout(() => { activeEmergency = false; }, 30000);
+            }
+        }
+
+        // ================================================================
+        //  🚨  SOS SYSTEM
+        // ================================================================
+        function triggerSOS(reason) {
+            if (sosTriggered) return;
+            sosTriggered = true;
+
+            document.getElementById('sosReason').innerText = reason || 'Manual SOS Triggered';
+            document.getElementById('sosOverlay').style.display = 'flex';
+
+            let c = 5;
+            window.itv = setInterval(() => {
+                c--;
+                document.getElementById('timer').innerText = c;
+                if (c <= 0) {
+                    clearInterval(window.itv);
+                    stopSOS();
+
+                    let msg = "📱 SMS EMERGENCY BROADCAST SENT TO:\n";
+                    guardians.forEach(g => msg += `\n- ${g.name} (${g.phone})`);
+                    msg += `\n\n📍 Live Tracking:\nhttp://maps.google.com/?q=${userPos[0]},${userPos[1]}`;
+                    msg += `\n\nREASON: ${reason || 'Manual SOS'}`;
+
+                    // Log SOS to backend
+                    fetch('/api/v1/emergency-log', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            location: { lat: userPos[0], lng: userPos[1] },
+                            reason: reason,
+                            user: localStorage.getItem('userName') || 'Unknown'
+                        })
+                    }).catch(e => console.error(e));
+
+                    setTimeout(() => alert(msg), 150);
+                }
+            }, 1000);
+        }
+
+        function stopSOS() {
+            clearInterval(window.itv);
+            document.getElementById('sosOverlay').style.display = 'none';
+            document.getElementById('timer').innerText = '5';
+            sosTriggered = false;
+        }
+
+        // ================================================================
+        //  MAP ENGINE
+        // ================================================================
         async function initMap() {
             if (map) return;
             map = L.map('realMap').setView(userPos, 13);
@@ -361,18 +1071,15 @@
                 const json = await res.json();
                 dangerNodes = json.data.danger_nodes || [];
 
-                // Group crimes by area for mapping
                 let areaCrimes = {};
                 dangerNodes.forEach(node => {
-                    let k = node.location.lat + "," + node.location.lng;
+                    let k = node.location.lat + ',' + node.location.lng;
                     if (!areaCrimes[k]) areaCrimes[k] = { loc: node.location, count: 0, types: new Set(), area: node.area };
                     areaCrimes[k].count += node.cases || 1;
                     if (node.crimeType) areaCrimes[k].types.add(node.crimeType);
                 });
-
                 dangerAreas = Object.values(areaCrimes);
-                // We no longer plot them globally here; we only pop them when intersected.
-            } catch (e) { console.error("Could not load backend map data", e); }
+            } catch (e) { console.error('Could not load backend map data', e); }
         }
 
         function resetMap() {
@@ -388,9 +1095,9 @@
 
         async function geocodeLocation(query) {
             query = query.trim();
-            if (query.toUpperCase() === 'CURRENT' || query.toUpperCase() === 'MY CURRENT LOCATION') return L.latLng(userPos[0], userPos[1]);
-            if (query.includes(',') && !isNaN(parseFloat(query.split(',')[0]))) return L.latLng(parseFloat(query.split(',')[0]), parseFloat(query.split(',')[1]));
-
+            if (query.toUpperCase() === 'CURRENT') return L.latLng(userPos[0], userPos[1]);
+            if (query.includes(',') && !isNaN(parseFloat(query.split(',')[0])))
+                return L.latLng(parseFloat(query.split(',')[0]), parseFloat(query.split(',')[1]));
             try {
                 let searchQ = query.toLowerCase().includes('coimbatore') ? query : query + ', Coimbatore, Tamil Nadu, India';
                 const response = await fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(searchQ));
@@ -404,34 +1111,30 @@
             let oVal = document.getElementById('originSelect').value;
             let dVal = document.getElementById('destSelect').value;
 
-            document.getElementById('roadName').innerText = "Locating Coordinates...";
+            document.getElementById('roadName').innerText = 'Locating Coordinates...';
             let infoBox = document.getElementById('routeInfo');
             if (infoBox.style.display === 'none') {
                 infoBox.style.display = 'block';
                 if (map) setTimeout(() => map.invalidateSize(), 50);
             }
-            document.getElementById('riskAnalysis').innerText = "Running geocoding index...";
+            document.getElementById('riskAnalysis').innerText = 'Running geocoding index...';
 
             let start = await geocodeLocation(oVal);
             let end = await geocodeLocation(dVal);
 
             if (!start || !end) {
-                document.getElementById('riskAnalysis').innerText = `⚠️ Error: Could not completely find location. Please check spelling.`;
+                document.getElementById('riskAnalysis').innerText = '⚠️ Error: Could not find location. Check spelling.';
                 return;
             }
+            if (start.lat === end.lat && start.lng === end.lng) return alert('Origin and Destination are identical.');
 
-            if (start.lat === end.lat && start.lng === end.lng) return alert("Origin and Destination are identical.");
-
-            document.getElementById('roadName').innerText = "Calculating Route...";
-            document.getElementById('riskAnalysis').innerText = "Analyzing safety via AI Engine...";
+            document.getElementById('roadName').innerText = 'Calculating Route...';
+            document.getElementById('riskAnalysis').innerText = 'Analyzing safety via AI Engine...';
 
             let router = L.Routing.osrmv1();
-            router.route([
-                { latLng: start },
-                { latLng: end }
-            ], function (err, routes) {
+            router.route([{ latLng: start }, { latLng: end }], function (err, routes) {
                 if (err || !routes || routes.length === 0) {
-                    document.getElementById('riskAnalysis').innerText = "⚠️ Error: Could not calculate a street route.";
+                    document.getElementById('riskAnalysis').innerText = '⚠️ Error: Could not calculate a street route.';
                     return;
                 }
                 drawAndEvaluateRoute(routes[0]);
@@ -440,7 +1143,6 @@
 
         function drawAndEvaluateRoute(route) {
             let coords = route.coordinates;
-            let riskTicks = 0;
             let closeCrimes = [];
             let highlightedAreas = new Set();
 
@@ -451,11 +1153,8 @@
                 dangerAreas.forEach(area => {
                     let dist = map.distance([c.lat, c.lng], [area.loc.lat, area.loc.lng]);
                     if (dist < 500) {
-                        riskTicks += 1; // Simplified logic per coordinate intersection
                         highlightedAreas.add(area);
-                        area.types.forEach(t => {
-                            if (!closeCrimes.includes(t)) closeCrimes.push(t);
-                        });
+                        area.types.forEach(t => { if (!closeCrimes.includes(t)) closeCrimes.push(t); });
                     }
                 });
             });
@@ -464,272 +1163,104 @@
                 let cases = ac.count;
                 let radius = cases > 50 ? 25 : (cases > 20 ? 15 : 8);
                 let types = Array.from(ac.types).join(', ');
-
                 let circle = L.circleMarker([ac.loc.lat, ac.loc.lng], {
-                    color: '#ff0000', fillColor: '#ff0000', fillOpacity: 0.5, radius: radius
+                    color: '#ff0000', fillColor: '#ff0000', fillOpacity: 0.5, radius
                 }).addTo(map);
-
-                circle.bindPopup(`
-                    <div style="color:#000;">
-                        <b>🚨 DANGER AREA: ${ac.area || 'Hotspot'}</b><br>
-                        Incident Reports: ${cases}<br>
-                        Types: ${types}
-                    </div>
-                `);
+                circle.bindPopup(`<div style="color:#000;"><b>🚨 DANGER: ${ac.area || 'Hotspot'}</b><br>Reports: ${cases}<br>Types: ${types}</div>`);
                 mapCircles.push(circle);
             });
 
-            // Detailed Risk Calculation Engine
             let score = 100;
-            const currentHour = new Date().getHours();
-            const isNight = (currentHour >= 22 || currentHour <= 4); // 10 PM to 4 AM
-            const isEvening = (currentHour >= 18 && currentHour < 22);
-
+            const h = new Date().getHours();
+            const isNight = (h >= 22 || h <= 4);
+            const isEvening = (h >= 18 && h < 22);
             let penaltyDetails = [];
 
             if (highlightedAreas.size > 0) {
-                let totalCasesEncountered = 0;
-                highlightedAreas.forEach(a => totalCasesEncountered += a.count);
-
-                let historicalPenalty = Math.min(60, totalCasesEncountered * 1.5);
-                score -= historicalPenalty;
-                penaltyDetails.push(`⚠️ Historical Crimes Penalty: -${Math.round(historicalPenalty)} pts (${totalCasesEncountered} past cases)`);
+                let total = 0;
+                highlightedAreas.forEach(a => total += a.count);
+                let pen = Math.min(60, total * 1.5);
+                score -= pen;
+                penaltyDetails.push(`⚠️ Historical Crimes: -${Math.round(pen)} pts (${total} cases)`);
             }
-
-            // Time-of-day Risk Multiplier
             if (isNight) {
-                if (highlightedAreas.size > 0) {
-                    score -= 25;
-                    penaltyDetails.push(`🌙 Severe Night Travel Risk: -25 pts`);
-                } else {
-                    score -= 10;
-                    penaltyDetails.push(`🌙 General Night Travel: -10 pts`);
-                }
+                score -= highlightedAreas.size > 0 ? 25 : 10;
+                penaltyDetails.push(highlightedAreas.size > 0 ? '🌙 Night + Danger Zone: -25 pts' : '🌙 General Night: -10 pts');
             } else if (isEvening) {
                 score -= 5;
-                penaltyDetails.push(`🌆 Evening Travel: -5 pts`);
+                penaltyDetails.push('🌆 Evening travel: -5 pts');
             }
 
-            // Bound score limits
-            if (score < 5) score = 5;
-            if (score > 100) score = 100;
-
+            score = Math.max(5, Math.min(100, score));
             let color = score > 60 ? 'var(--safe)' : (score > 30 ? 'var(--warning)' : 'var(--accent)');
 
             if (mapRoutingLine) map.removeLayer(mapRoutingLine);
-            mapRoutingLine = L.polyline(coords, { color: color, weight: 6, opacity: 0.8 }).addTo(map);
-
-            // Adjust bounds gently
+            mapRoutingLine = L.polyline(coords, { color, weight: 6, opacity: 0.8 }).addTo(map);
             map.fitBounds(mapRoutingLine.getBounds(), { padding: [30, 30] });
-
             showRouteDetails(score, closeCrimes, penaltyDetails);
         }
 
         function showRouteDetails(score, closeCrimes, penaltyDetails) {
-            document.getElementById('roadName').innerText = "Route Safety Analysis";
+            document.getElementById('roadName').innerText = 'Route Safety Analysis';
             const badge = document.getElementById('scoreDisplay');
             badge.innerText = `Safety Score: ${Math.round(score)}%`;
             badge.style.background = score > 60 ? 'green' : (score > 30 ? 'orange' : 'red');
-
-            document.getElementById('riskAnalysis').innerText = score < 30 ? "⚠️ HIGH RISK: Path intersects major historical crime hotspots." : (score < 60 ? "⚠️ CAUTION: Proceed with care." : "✅ Clear path according to data.");
+            document.getElementById('riskAnalysis').innerText =
+                score < 30 ? '⚠️ HIGH RISK: Major crime hotspots on route.' :
+                    (score < 60 ? '⚠️ CAUTION: Proceed with care.' : '✅ Clear path according to data.');
 
             let histHtml = closeCrimes.slice(0, 5).map(h => `<div class="history-item">⚠️ History of ${h || 'Incident'} on route</div>`).join('');
-
-            if (penaltyDetails && penaltyDetails.length > 0) {
-                histHtml += `<br><strong style="font-size:11px; color:#fff;">Algorithm Calculation Details:</strong>`;
-                penaltyDetails.forEach(p => {
-                    histHtml += `<div class="history-item" style="color:var(--warning);">${p}</div>`;
-                });
+            if (penaltyDetails.length > 0) {
+                histHtml += `<br><strong style="font-size:11px; color:#fff;">Score Breakdown:</strong>`;
+                penaltyDetails.forEach(p => { histHtml += `<div class="history-item" style="color:var(--warning);">${p}</div>`; });
             }
-
-            document.getElementById('roadHistory').innerHTML = histHtml || `<div class="history-item">✅ No major incidents reported nearby. No penalties applied.</div>`;
+            document.getElementById('roadHistory').innerHTML = histHtml || `<div class="history-item">✅ No incidents nearby. No penalties.</div>`;
         }
 
-        // --- CRIME REPORTING ---
-        function submitReport() {
-            const area = document.getElementById('crimeArea').value;
-            if (!area) return alert("Enter area name");
-
-            // Simulate Upload
-            setTimeout(() => {
-                alert(`SUCCESS: Your information for ${area} is recorded. Thank you for contributing to the Safety Network! Your evidence has been sent successfully.`);
-                document.getElementById('crimeArea').value = "";
-                document.getElementById('crimeDesc').value = "";
-                nav('map');
-            }, 1500);
-        }
-
-        // --- SENSORS & ACCELEROMETER ---
-        let currentBPM = 60;
-        let currentVolume = 0;
-        let activeEmergency = false;
-
-        function evaluateMultiSensorEmergency() {
-            if (activeEmergency) return;
-
-            // Only trigger if BOTH sensors are actively checked and BOTH thresholds are simultaneously crossed
-            if (document.getElementById('heartSens').checked && document.getElementById('screamSens').checked) {
-                if (currentBPM > 105 && currentVolume > 0.85) {
-                    activeEmergency = true;
-
-                    triggerSOS(); // Triggers the red screen
-
-                    // Fire both backend triggers simultaneously since both conditions met
-                    let uName = localStorage.getItem('userName') || 'Unknown User';
-                    let locData = { lat: userPos[0], lng: userPos[1] };
-
-                    fetch('/api/v1/sensor/trigger', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ userName: uName, type: 'HEARTBEAT_HIGH', value: currentBPM + " BPM", loc: locData })
-                    }).catch(e => console.error(e));
-
-                    fetch('/api/v1/sensor/trigger', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ userName: uName, type: 'SCREAM_DETECTED', value: "Volume: " + Math.round(currentVolume * 100) + "%", loc: locData })
-                    }).catch(e => console.error(e));
-
-                    // Cool down lock to prevent database spamming during 1 emergency event
-                    setTimeout(() => { activeEmergency = false; }, 30000);
-                }
-            }
-        }
-
-        function toggleHeart() {
-            if (document.getElementById('heartSens').checked) {
-                heartbeatInterval = setInterval(() => {
-                    currentBPM = Math.floor(Math.random() * (110 - 60) + 60);
-                    document.getElementById('heartDisplay').innerText = `💓 BPM: ${currentBPM}`;
-                    evaluateMultiSensorEmergency();
-                }, 3000);
-            } else {
-                clearInterval(heartbeatInterval);
-                document.getElementById('heartDisplay').innerText = `💓 BPM: --`;
-                currentBPM = 60;
-            }
-        }
-
-        // --- 🎙️ SCREAM DETECTION SENSOR ---
-        async function initScreamDetection() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const source = audioContext.createMediaStreamSource(stream);
-                const processor = audioContext.createScriptProcessor(2048, 1, 1);
-
-                source.connect(processor);
-                processor.connect(audioContext.destination);
-
-                processor.onaudioprocess = (e) => {
-                    const input = e.inputBuffer.getChannelData(0);
-                    currentVolume = Math.max(...input.map(Math.abs));
-                    evaluateMultiSensorEmergency();
-                };
-            } catch (err) { console.log("Mic access denied or HTTPS required"); }
-        }
-
-        // Call this function when the page loads
-        initScreamDetection();
-
-        let motionCount = 0;
-        window.addEventListener('devicemotion', (e) => {
-            if (document.getElementById('fallSens').checked) {
-                let acc = e.accelerationIncludingGravity;
-                let total = Math.sqrt(acc.x ** 2 + acc.y ** 2 + acc.z ** 2);
-
-                let uName = localStorage.getItem('userName') || 'Unknown User';
-                let locData = { lat: userPos[0], lng: userPos[1] };
-
-                if (total > 35) {
-                    document.getElementById('sensorStatus').innerText = "⚠️ Fall Impact Detected!";
-                    triggerSOS();
-
-                    fetch('/api/v1/sensor/trigger', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ userName: uName, type: 'FALL_DETECTED', value: "Impact Force: " + Math.round(total) + "G", loc: locData })
-                    }).catch(err => console.error(err));
-
-                } else if (total > 15) {
-                    motionCount++;
-                    if (motionCount > 10) {
-                        document.getElementById('sensorStatus').innerText = "⚠️ Panic Running Detected!";
-                        triggerSOS();
-
-                        fetch('/api/v1/sensor/trigger', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ userName: uName, type: 'RUNNING_PANIC', value: "Sustained High Motion", loc: locData })
-                        }).catch(err => console.error(err));
-
-                        motionCount = 0;
-                    }
-                } else {
-                    motionCount = 0;
-                }
-            }
-        });
-
-        let guardians = [
-            { name: "Mom (Primary)", phone: "+91 98765 43210" },
-            { name: "Local Police Control", phone: "100" },
-            { name: "Women's Helpline", phone: "1091" }
-        ];
-
+        // ================================================================
+        //  GUARDIANS
+        // ================================================================
         function renderGuardians() {
-            let html = "";
+            let html = '';
             guardians.forEach(g => {
                 html += `<div class="form-card" style="padding:15px; margin-top:10px; display:flex; justify-content:space-between; align-items:center;">
-                            <div><b>🛡️ ${g.name}</b><br><span style="color:var(--muted); font-size:12px;">${g.phone}</span></div>
-                            <span style="color:var(--safe); font-size:11px; font-weight:bold;">ACTIVE</span>
-                         </div>`;
+                        <div><b>🛡️ ${g.name}</b><br><span style="color:var(--muted); font-size:12px;">${g.phone}</span></div>
+                        <span style="color:var(--safe); font-size:11px; font-weight:bold;">ACTIVE</span>
+                     </div>`;
             });
             document.getElementById('gList').innerHTML = html;
         }
 
-        renderGuardians();
-
-        let sosTriggered = false;
-        function triggerSOS() {
-            if (sosTriggered) return;
-            sosTriggered = true;
-            document.getElementById('sosOverlay').style.display = 'flex';
-            let c = 5;
-            window.itv = setInterval(() => {
-                c--;
-                document.getElementById('timer').innerText = c;
-                if (c <= 0) {
-                    clearInterval(window.itv);
-                    stopSOS();
-
-                    let msg = "📱 SMS EMERGENCY SECURE BROADCAST SENT TO:\n";
-                    guardians.forEach(g => msg += `\n- ${g.name} (${g.phone})`);
-                    msg += `\n\n📍 Live Tracking Link attached:\nhttp://maps.google.com/?q=${userPos[0]},${userPos[1]}`;
-
-                    setTimeout(() => alert(msg), 150);
-                }
-            }, 1000);
-        }
-
-        function stopSOS() {
-            clearInterval(window.itv);
-            document.getElementById('sosOverlay').style.display = 'none';
-            document.getElementById('timer').innerText = "5";
-            sosTriggered = false;
-        }
-
         function addGuardian() {
-            const name = document.getElementById('gName').value;
-            const phone = document.getElementById('gPhone').value;
-            if (!name || !phone) return alert("Enter name and phone.");
+            const name = document.getElementById('gName').value.trim();
+            const phone = document.getElementById('gPhone').value.trim();
+            if (!name || !phone) return alert('Enter name and phone.');
             guardians.push({ name, phone });
             renderGuardians();
-            document.getElementById('gName').value = "";
-            document.getElementById('gPhone').value = "";
-            alert("Added to Guardian Circle");
+            document.getElementById('gName').value = '';
+            document.getElementById('gPhone').value = '';
+            alert('Added to Guardian Circle');
         }
 
+        renderGuardians();
+
+        // ================================================================
+        //  REPORT
+        // ================================================================
+        function submitReport() {
+            const area = document.getElementById('crimeArea').value;
+            if (!area) return alert('Enter area name');
+            setTimeout(() => {
+                alert(`SUCCESS: Evidence for ${area} recorded. Thank you for contributing!`);
+                document.getElementById('crimeArea').value = '';
+                document.getElementById('crimeDesc').value = '';
+                nav('map');
+            }, 1500);
+        }
+
+        // ================================================================
+        //  GPS SYNC
+        // ================================================================
         function syncGPS() {
             navigator.geolocation.getCurrentPosition(p => {
                 userPos = [p.coords.latitude, p.coords.longitude];
