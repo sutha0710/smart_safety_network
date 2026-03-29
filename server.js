@@ -64,12 +64,33 @@ const CrimeNode = mongoose.model('CrimeNode', CrimeSchema);
 const SafeNode = mongoose.model('SafeNode', SafeZoneSchema);
 const User = mongoose.model('User', UserSchema);
 
+// 1. Sensor Alert Schema (For Heartbeat, Scream, Running/Fall)
+const AlertSchema = new mongoose.Schema({
+    userName: String,
+    alertType: { type: String, enum: ['HEARTBEAT_HIGH', 'SCREAM_DETECTED', 'RUNNING_PANIC', 'FALL_DETECTED'] },
+    value: String, // e.g., "115 BPM" or "0.9 Volume"
+    location: { lat: Number, lng: Number },
+    timestamp: { type: Date, default: Date.now }
+});
+const Alert = mongoose.model('Alert', AlertSchema);
+
+// 2. Road History & Crime Dataset Schema
+const RoadSchema = new mongoose.Schema({
+    area: String,
+    location: { lat: Number, lng: Number },
+    crimeType: String,
+    cases: Number,
+    lastIncident: Date
+});
+const Road = mongoose.model('Road', RoadSchema);
+
 // 4. API ROUTES
 
 // A. Fetch All Spatial Data (The Map Nodes)
 app.get('/api/v1/map-nodes', async (req, res) => {
     try {
         const crimes = await CrimeNode.find();
+        const roadCrimes = await Road.find();
         const safeZones = await SafeNode.find();
         
         const hour = new Date().getHours();
@@ -80,7 +101,7 @@ app.get('/api/v1/map-nodes', async (req, res) => {
             time_protocol: nightMultiplier > 1 ? "NIGHT_PROTOCOL_ACTIVE" : "STANDARD",
             multiplier: nightMultiplier,
             data: {
-                danger_nodes: crimes,
+                danger_nodes: [...crimes, ...roadCrimes],
                 safe_nodes: safeZones
             }
         });
@@ -117,7 +138,26 @@ app.post('/api/v1/user/update-circle', async (req, res) => {
     }
 });
 
-// D. Emergency SOS Log
+// D. 💓 HEARTBEAT & 🎙️ SCREAM RECEIVER
+app.post('/api/v1/sensor/trigger', async (req, res) => {
+    try {
+        const { userName, type, value, loc } = req.body;
+        const newAlert = new Alert({
+            userName: userName,
+            alertType: type,
+            value: value,
+            location: loc
+        });
+        await newAlert.save();
+        
+        // Log to console for your SREC Demo
+        console.log(`🚨 [${type}] ALERT for ${userName} at ${loc?.lat}, ${loc?.lng} | Value: ${value}`);
+        
+        res.json({ status: "SUCCESS", message: "Safety Grid Notified" });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// E. Emergency SOS Log
 app.post('/api/v1/emergency-log', async (req, res) => {
     console.log("🚨 SOS SIGNAL RECEIVED AT SERVER:", req.body.location);
     res.status(200).json({ signal: "BROADCASTED", mesh_id: Math.random().toString(36).substr(2, 9) });

@@ -560,29 +560,140 @@
         }
 
         // --- SENSORS & ACCELEROMETER ---
+        let currentBPM = 60;
+        let currentVolume = 0;
+        let activeEmergency = false;
+
+        function evaluateMultiSensorEmergency() {
+            if (activeEmergency) return;
+
+            // Only trigger if BOTH sensors are actively checked and BOTH thresholds are simultaneously crossed
+            if (document.getElementById('heartSens').checked && document.getElementById('screamSens').checked) {
+                if (currentBPM > 105 && currentVolume > 0.85) {
+                    activeEmergency = true;
+
+                    triggerSOS(); // Triggers the red screen
+
+                    // Fire both backend triggers simultaneously since both conditions met
+                    let uName = localStorage.getItem('userName') || 'Unknown User';
+                    let locData = { lat: userPos[0], lng: userPos[1] };
+
+                    fetch('/api/v1/sensor/trigger', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userName: uName, type: 'HEARTBEAT_HIGH', value: currentBPM + " BPM", loc: locData })
+                    }).catch(e => console.error(e));
+
+                    fetch('/api/v1/sensor/trigger', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userName: uName, type: 'SCREAM_DETECTED', value: "Volume: " + Math.round(currentVolume * 100) + "%", loc: locData })
+                    }).catch(e => console.error(e));
+
+                    // Cool down lock to prevent database spamming during 1 emergency event
+                    setTimeout(() => { activeEmergency = false; }, 30000);
+                }
+            }
+        }
+
         function toggleHeart() {
             if (document.getElementById('heartSens').checked) {
                 heartbeatInterval = setInterval(() => {
-                    let bpm = Math.floor(Math.random() * (110 - 60) + 60);
-                    document.getElementById('heartDisplay').innerText = `💓 BPM: ${bpm}`;
-                    if (bpm > 105) triggerSOS();
+                    currentBPM = Math.floor(Math.random() * (110 - 60) + 60);
+                    document.getElementById('heartDisplay').innerText = `💓 BPM: ${currentBPM}`;
+                    evaluateMultiSensorEmergency();
                 }, 3000);
             } else {
                 clearInterval(heartbeatInterval);
                 document.getElementById('heartDisplay').innerText = `💓 BPM: --`;
+                currentBPM = 60;
             }
         }
 
+        // --- 🎙️ SCREAM DETECTION SENSOR ---
+        async function initScreamDetection() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const source = audioContext.createMediaStreamSource(stream);
+                const processor = audioContext.createScriptProcessor(2048, 1, 1);
+
+                source.connect(processor);
+                processor.connect(audioContext.destination);
+
+                processor.onaudioprocess = (e) => {
+                    const input = e.inputBuffer.getChannelData(0);
+                    currentVolume = Math.max(...input.map(Math.abs));
+                    evaluateMultiSensorEmergency();
+                };
+            } catch (err) { console.log("Mic access denied or HTTPS required"); }
+        }
+
+        // Call this function when the page loads
+        initScreamDetection();
+
+        let motionCount = 0;
         window.addEventListener('devicemotion', (e) => {
             if (document.getElementById('fallSens').checked) {
                 let acc = e.accelerationIncludingGravity;
                 let total = Math.sqrt(acc.x ** 2 + acc.y ** 2 + acc.z ** 2);
-                if (total > 35) triggerSOS(); // Sudden impact
+
+                let uName = localStorage.getItem('userName') || 'Unknown User';
+                let locData = { lat: userPos[0], lng: userPos[1] };
+
+                if (total > 35) {
+                    document.getElementById('sensorStatus').innerText = "⚠️ Fall Impact Detected!";
+                    triggerSOS();
+
+                    fetch('/api/v1/sensor/trigger', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userName: uName, type: 'FALL_DETECTED', value: "Impact Force: " + Math.round(total) + "G", loc: locData })
+                    }).catch(err => console.error(err));
+
+                } else if (total > 15) {
+                    motionCount++;
+                    if (motionCount > 10) {
+                        document.getElementById('sensorStatus').innerText = "⚠️ Panic Running Detected!";
+                        triggerSOS();
+
+                        fetch('/api/v1/sensor/trigger', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ userName: uName, type: 'RUNNING_PANIC', value: "Sustained High Motion", loc: locData })
+                        }).catch(err => console.error(err));
+
+                        motionCount = 0;
+                    }
+                } else {
+                    motionCount = 0;
+                }
             }
         });
 
-        // --- SOS & CIRCLE ---
+        let guardians = [
+            { name: "Mom (Primary)", phone: "+91 98765 43210" },
+            { name: "Local Police Control", phone: "100" },
+            { name: "Women's Helpline", phone: "1091" }
+        ];
+
+        function renderGuardians() {
+            let html = "";
+            guardians.forEach(g => {
+                html += `<div class="form-card" style="padding:15px; margin-top:10px; display:flex; justify-content:space-between; align-items:center;">
+                            <div><b>🛡️ ${g.name}</b><br><span style="color:var(--muted); font-size:12px;">${g.phone}</span></div>
+                            <span style="color:var(--safe); font-size:11px; font-weight:bold;">ACTIVE</span>
+                         </div>`;
+            });
+            document.getElementById('gList').innerHTML = html;
+        }
+
+        renderGuardians();
+
+        let sosTriggered = false;
         function triggerSOS() {
+            if (sosTriggered) return;
+            sosTriggered = true;
             document.getElementById('sosOverlay').style.display = 'flex';
             let c = 5;
             window.itv = setInterval(() => {
@@ -590,7 +701,13 @@
                 document.getElementById('timer').innerText = c;
                 if (c <= 0) {
                     clearInterval(window.itv);
-                    alert("🚨 EMERGENCY BROADCAST SENT TO ALL GUARDIANS");
+                    stopSOS();
+
+                    let msg = "📱 SMS EMERGENCY SECURE BROADCAST SENT TO:\n";
+                    guardians.forEach(g => msg += `\n- ${g.name} (${g.phone})`);
+                    msg += `\n\n📍 Live Tracking Link attached:\nhttp://maps.google.com/?q=${userPos[0]},${userPos[1]}`;
+
+                    setTimeout(() => alert(msg), 150);
                 }
             }, 1000);
         }
@@ -598,12 +715,18 @@
         function stopSOS() {
             clearInterval(window.itv);
             document.getElementById('sosOverlay').style.display = 'none';
+            document.getElementById('timer').innerText = "5";
+            sosTriggered = false;
         }
 
         function addGuardian() {
             const name = document.getElementById('gName').value;
             const phone = document.getElementById('gPhone').value;
-            document.getElementById('gList').innerHTML += `<div class="form-card">✅ ${name} (${phone})</div>`;
+            if (!name || !phone) return alert("Enter name and phone.");
+            guardians.push({ name, phone });
+            renderGuardians();
+            document.getElementById('gName').value = "";
+            document.getElementById('gPhone').value = "";
             alert("Added to Guardian Circle");
         }
 
